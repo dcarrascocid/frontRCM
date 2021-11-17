@@ -24,6 +24,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css"
             ],
             "scripts": []
@@ -119,6 +120,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "reservacitas"
+    }
+  },
+  "defaultProject": "reservacitas",
+  "cli": {
+    "analytics": "5dd4307d-f319-45c4-87e6-dadc9bbb4e14"
+  }
 }
