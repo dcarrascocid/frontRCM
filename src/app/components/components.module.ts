@@ -3,18 +3,22 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'
 import { CitasComponent } from './citas/citas.component';
+import { ConfirmacionCitaComponent } from './confirmacion-cita/confirmacion-cita.component';
+
 
 
 
 
 @NgModule({
   declarations: [
-    CitasComponent
+    CitasComponent,
+    ConfirmacionCitaComponent
 
 
   ],
   exports: [
-    CitasComponent
+    CitasComponent,
+    ConfirmacionCitaComponent
 
 
 
