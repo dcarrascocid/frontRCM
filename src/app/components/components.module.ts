@@ -4,21 +4,21 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'
 import { CitasComponent } from './citas/citas.component';
 import { ConfirmacionCitaComponent } from './confirmacion-cita/confirmacion-cita.component';
-
-
-
+import { TablaResultadosComponent } from './tabla-resultados/tabla-resultados.component';
 
 
 @NgModule({
   declarations: [
     CitasComponent,
-    ConfirmacionCitaComponent
+    ConfirmacionCitaComponent,
+    TablaResultadosComponent
 
 
   ],
   exports: [
     CitasComponent,
-    ConfirmacionCitaComponent
+    ConfirmacionCitaComponent,
+    TablaResultadosComponent
 
 
 
