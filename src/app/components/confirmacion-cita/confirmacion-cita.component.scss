@@ -1,0 +1,37 @@
+.formulario {
+    margin: 10%;
+    background: whitesmoke;
+}
+
+.formularioAgen {
+    background: white;
+    margin: 10px;
+}
+
+.preAgen {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+@media(max-width:575px) {}
+
+@media(min-width:576px) and (max-width:767px) {
+    .margenBoton {
+        margin-right: 2%;
+        margin-left: 5%;
+    }
+}
+
+@media(min-width:768px) and (max-width:991px) {
+    .margenBoton {
+        margin-right: 2%;
+        margin-left: 5%;
+    }
+}
+
+@media(min-width:992px) {
+    .margenBoton {
+        margin-right: 2%;
+        margin-left: 5%;
+    }
+}
