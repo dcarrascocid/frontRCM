@@ -85,4 +85,35 @@ getHoraText(hora:string){
   return hora_;
 }
 
+validateRun(run) {
+
+  if (!/^[0-9]+[-|‐]{1}[0-9kK]{1}$/.test(run)) {
+    return false
+  } else {
+    var tmp = run.split('-');
+    var digv = tmp[1];
+    var rut = tmp[0];
+    if (digv == 'K') digv = 'k';
+    return (this.checkRunDv(rut) == (digv as string).toUpperCase());
+  }
+
+}
+
+checkRunDv(T) {
+  var M = 0, S = 1;
+  for (; T; T = Math.floor(T / 10))
+    S = (S + T % 10 * (9 - M++ % 6)) % 11;
+  return S ? S - 1 : 'K';
+}
+
+validateEmail(correo) {
+  let re = /^([\da-z_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
+  if (!re.test(correo)) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+
 }

@@ -23,24 +23,24 @@ export class UsuarioService {
                 private router: Router,
                 private ngZone: NgZone ) {
 
-    this.googleInit();
+    // this.googleInit();
   }
 
 
-  googleInit() {
+  // googleInit() {
 
-    return new Promise( resolve => {
-      gapi.load('auth2', () => {
-        this.auth2 = gapi.auth2.init({
-          client_id: '1045072534136-oqkjcjvo449uls0bttgvl3aejelh22f5.apps.googleusercontent.com',
-          cookiepolicy: 'single_host_origin',
-        });
+  //   return new Promise( resolve => {
+  //     gapi.load('auth2', () => {
+  //       this.auth2 = gapi.auth2.init({
+  //         client_id: '1045072534136-oqkjcjvo449uls0bttgvl3aejelh22f5.apps.googleusercontent.com',
+  //         cookiepolicy: 'single_host_origin',
+  //       });
 
-        resolve();
-      });
-    })
+  //       resolve();
+  //     });
+  //   })
 
-  }
+  // }
 
   logout() {
     localStorage.removeItem('token');
@@ -98,4 +98,69 @@ export class UsuarioService {
   cargarAgenda(data){
     return this.http.post(`${ base_url }/cargaragenda`, data);
   }
+
+  getToken(){
+    const data = null;
+    return this.http.get(`${ base_url }/fon-obtener-token`);
+  }
+
+  buscarbeneficiario(data){
+    return this.http.post(`${ base_url }/fon-buscar-beneficiario`, data);
+  }
+
+  buscaEspecialidades(){
+      return this.http.get(`${ base_url }/especialidades`);
+  }
+
+  buscaSucursales(pre_id){
+    const data={
+      pre_id:pre_id
+    }
+    return this.http.post(`${ base_url }/sucursales`, data);
+  }
+
+
+
+  BuscaPrestador(){
+    return this.http.get(`${ base_url }/prestador`);
+  }
+
+  BuscaRegionPrestador(pre_id){
+    const data={
+      pre_id:pre_id
+    }
+    return this.http.post(`${ base_url }/regionprestador`, data);
+  }
+
+  buscaComunaPrestador(reg_idregion){
+    const data={
+      reg_idregion:reg_idregion
+    }
+    return this.http.post(`${ base_url }/comunaprestador`, data);
+  }
+
+  buscaEspecilidadeComuna(com_idcomuna){
+    const data={
+      com_idcomuna:com_idcomuna
+    }
+    return this.http.post(`${ base_url }/especialidadcomuna`, data); 
+  }
+  
+  buscaRegionXEspecialidad(esp_idespecialidad){
+    const data={
+      esp_idespecialidad:esp_idespecialidad
+    }
+    return this.http.post(`${ base_url }/regionespecialidad`, data); 
+  }
+
+  buscarProfespecialidad(esp_idespecialidad){
+    const data={
+      esp_idespecialidad:esp_idespecialidad
+    }
+    return this.http.post(`${ base_url }/profespecialidad`, data); 
+  }
+  
+ buscaPrestacionAll(){
+    return this.http.get(`${ base_url }/prestaciones`); 
+  }  
 }

@@ -14,7 +14,7 @@ export class PagesComponent implements OnInit {
   constructor( ) { }
 
   ngOnInit(): void {
-    customInitFunctions();
+    // customInitFunctions();
   }
 
 }
