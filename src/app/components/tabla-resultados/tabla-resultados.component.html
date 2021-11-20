@@ -100,8 +100,60 @@
     Formulario aparece al seleccionar prestacion de imagen o laboratorio clinico, reemplaza las tablas
     de dia o semana
 -->
-<div>
-    <div class="row border">
+
+<div class="row border">
+    <div class="border border-secondary rouded formulario">
+        <label class="p-2" for="">AREA DE EXAMENES</label>
+        <form class="border border-primary rouded formularioAgen mb-2">
+            <div class="col">
+                <div class="col mt-2 mb-2 p-4">
+                    <div class="input-group mb-3">
+                        <label for="slcTexamen" class="input-group-text">Tripo de examen</label>
+                        <select class="form-select" id="slcTexamen">
+                          <option selected>Seleccione</option>
+                          <option value=""></option>
+                          <option value=""></option>
+                          <option value=""></option>
+                        </select>
+                        <div class="d-flex justify-content-end col">
+                            <button class="btn btn-outline-primary" type="submit">Buscar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col p-2">
+                <table class="table">
+                    <thead>
+                        <tr class="table-secondary">
+                            <th scope="col">Examen</th>
+                            <th scope="col">Codigo fonasa</th>
+                            <th scope="col">seleccion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-success">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr class="table-success">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr class="table-success">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="cantidadExamen">Examenes seleccionados</span>
+            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" disabled="disabled">
+        </div>
 
     </div>
 </div>
