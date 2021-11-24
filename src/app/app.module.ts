@@ -5,7 +5,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PagesModule } from './pages/pages.module';
 import { ComponentsModule } from './components/components.module';
-import {FormsModule} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms'; 
+
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+
 
 
 @NgModule({
@@ -19,8 +23,9 @@ import {FormsModule} from '@angular/forms';
     HttpClientModule,
     PagesModule,
     ComponentsModule,
-    FormsModule
-    
+    FormsModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule 
   ],
   providers: [
     

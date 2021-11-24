@@ -5,29 +5,32 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { CitasComponent } from './citas/citas.component';
 import { ConfirmacionCitaComponent } from './confirmacion-cita/confirmacion-cita.component';
 import { TablaResultadosComponent } from './tabla-resultados/tabla-resultados.component';
-
+import { CalendarioComponent } from './calendario/calendario.component';
+import { FullCalendarModule } from 'primeng/fullcalendar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
     CitasComponent,
     ConfirmacionCitaComponent,
-    TablaResultadosComponent
-
+    TablaResultadosComponent,
+    CalendarioComponent
+    
 
   ],
   exports: [
     CitasComponent,
     ConfirmacionCitaComponent,
-    TablaResultadosComponent
-
-
-
+    TablaResultadosComponent,
+    CalendarioComponent,
+    
   ],
   imports: [
     BrowserModule,
     CommonModule,
-    FormsModule, ReactiveFormsModule
-
+    FormsModule, ReactiveFormsModule,
+    FullCalendarModule,
+    BrowserAnimationsModule
   ]
 })
 export class ComponentsModule { }

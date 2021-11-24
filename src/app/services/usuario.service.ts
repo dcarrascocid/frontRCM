@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap, map, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -16,7 +16,7 @@ declare const gapi: any;
   providedIn: 'root'
 })
 export class UsuarioService {
-
+  @Output() DisparadorCitas: EventEmitter<any> = new EventEmitter(); 
   public auth2: any;
 
   constructor( private http: HttpClient, 
@@ -112,6 +112,14 @@ export class UsuarioService {
       return this.http.get(`${ base_url }/especialidades`);
   }
 
+  buscaEspecialidadesPrestador(pre_id){
+    const data ={
+      pre_id:pre_id
+    }
+    return this.http.post(`${ base_url }/especialidadesprestador`, data);
+}
+es
+
   buscaSucursales(pre_id){
     const data={
       pre_id:pre_id
@@ -163,4 +171,16 @@ export class UsuarioService {
  buscaPrestacionAll(){
     return this.http.get(`${ base_url }/prestaciones`); 
   }  
+
+  buscaCitasDisponiblesProf(data){
+    return this.http.post(`${ base_url }/buscacitasprofe`, data); 
+  }  
+
+  buscaCitasDisponiblesAll(data){
+    return this.http.post(`${ base_url }/buscacitasall`, data); 
+  }
+
+
+
 }
+

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UsuarioService } from '../../services/usuario.service';
-import Swal from 'sweetalert2'
-import { FormControl, FormGroup, Validators, FormGroupDirective, FormBuilder } from '@angular/forms'
+import Swal from 'sweetalert2';
+import { FormControl, FormGroup, Validators, FormGroupDirective, FormBuilder } from '@angular/forms';
 import { UtilService } from '../../services/util.service';
 import * as moment from 'moment';
 
@@ -24,11 +24,15 @@ export class CitasComponent implements OnInit {
   public sucursal:any =null;
   public profesional=null;
   public especialidad=null;
-  public fechasParams:any;
+  public prestador=null;
+  public citas:any=null;
+  fecha =new Date;
+  public fechaInicio = moment(this.fecha).format('YYYY-MM-DD');
+  public ultimoDia  = new Date(this.fecha.getFullYear(), this.fecha.getMonth() + 1, 0);
+  public fechaTermino=moment(this.ultimoDia).format('YYYY-MM-DD');
   
-
-
-
+  fecha1 = new FormControl(this.fechaInicio, []); 
+  fecha2 = new FormControl(this.fechaTermino, []); 
   public consultaForm: FormGroup;
 
 
@@ -50,31 +54,26 @@ export class CitasComponent implements OnInit {
   ngOnInit() {
     this.obetnerToken();
     this.buscaPrestador();
-    this.buscaEspecialidades();
-    this.fechas();
+    // this.fechas();
     this.buscaPrestacion();
   }
 
   get revItemForm(){
     return this.consultaForm.controls;
   }
+
   fechas(){
     
     const date = new Date();
      const primerDia = date;
+
     //  const primerDia = new Date(date.getFullYear(), date.getMonth(), 1);
      const ultimoDia  = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-      const fechaInicio = moment(primerDia).format('YYYY-MM-DD');
-      const fechaTermino = moment(ultimoDia).format('YYYY-MM-DD');
-      this.fechasParams =[{
-        nombre:'Desde',
-        fecha:fechaInicio,
-      },{
-        nombre:'Hasta',
-        fecha:fechaTermino,
-      }]
+      this.fechaInicio = moment(primerDia).format('YYYY-MM-DD');
+      this.fechaTermino = moment(ultimoDia).format('YYYY-MM-DD');
 
-  }
+console.log("fecha1", this.fecha1.value);
+    }
 
 
 
@@ -127,7 +126,6 @@ export class CitasComponent implements OnInit {
   }
   
   buscaEspecialidades(){
-  console.log("tester");
     this.UsuarioService.buscaEspecialidades().subscribe((resp:any)=>{
       this.especialidades= resp.data;
       console.log("especilaidades",this.especialidades);
@@ -164,7 +162,14 @@ export class CitasComponent implements OnInit {
 
   cambiaPrestador(pre_id){
     if(pre_id){
+      this.prestador=pre_id;
       this.BuscaRegionPrestador(pre_id);
+      this.UsuarioService.buscaEspecialidadesPrestador(pre_id).subscribe((resp:any)=>{
+     
+          this.especialidades=resp.data;
+        });
+ 
+
     }
   }
 
@@ -264,14 +269,75 @@ if(pres_id){
 }
 
 buscarCita(){
-  console.log(":::::::::LISTADO PARA LA BUSQUEDA:::::::");
-    console.log("PROF:::", this.profesionales);
-    console.log("PRESTA::", this.prestacion);
-    console.log("ESPECIALIDAD::", this.especialidad);
+ 
+  const data={
+    pre_id:this.prestador,
+    esp_id:this.especialidad,
+    fecha_inicio:this.fecha1.value,
+    fecha_termino:this.fecha2.value,
+    profesionales:this.profesionales,
+    pres_idprestacion:this.prestacion,
+  }; 
 
+  if(this.profesional){
+console.log("entro en con pro");
+    this.UsuarioService.buscaCitasDisponiblesProf(data).subscribe((resp:any)=>{
+  if(resp.data.length ==0){
+    Swal.fire({
+      title: 'Error!',
+      text: resp.mensaje,
+      icon: 'error',
+      confirmButtonText: 'Cerrar'
+    });
+  }
+  this.citas=resp.data
 
+          });
+  }
+  if(!this.profesional && this.profesionales){
+
+    this.UsuarioService.buscaCitasDisponiblesAll(data).subscribe((resp:any)=>{
+      if(resp.data.length ==0){
+        Swal.fire({
+          title: 'Error!',
+          text: resp.mensaje,
+          icon: 'error',
+          confirmButtonText: 'Cerrar'
+        });
+      }
+      this.citas=resp.data
+      this.UsuarioService.DisparadorCitas.emit({
+        data:this.citas
+      })
+      console.log("citas", this.citas);
+
+              });
+          
+
+  }
   
 }
 
+cambiaFecha(datos){
+  console.log("datos", datos.value);
+  console.log("datos", JSON.parse(JSON.stringify(datos.name)));
+}
+
+cambiaVer(data){
+  if(data==2){
+
+    this.fecha.setDate(this.fecha.getDate() - this.fecha.getDay());
+    const first = new Date(this.fecha);
+    const  last = new Date(this.fecha);
+    last.setDate(last.getDate()+6);
+
+    console.log("fecha1 ",first);
+    console.log("fecha1 ",last);
+
+}
+if(data ==1){
+  console.log("ver semana");
+}
+}
 }
 

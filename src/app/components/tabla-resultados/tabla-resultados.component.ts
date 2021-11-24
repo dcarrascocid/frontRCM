@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-tabla-resultados',
@@ -6,7 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./tabla-resultados.component.scss']
 })
 export class TablaResultadosComponent implements OnInit {
+  public monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre','Octubre', 'Noviembre', 'Deciembre'];
 
+  @Input() citas:any ='sin citas disponibles';
   constructor() { }
 
   ngOnInit() {

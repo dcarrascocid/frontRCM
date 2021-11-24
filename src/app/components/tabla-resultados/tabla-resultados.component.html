@@ -1,93 +1,18 @@
-<table class="table" hidden>
-    <thead>
-        <tr class="table-secondary">
-            <th scope="col">Semana</th>
-            <th scope="col">Lunes</th>
-            <th scope="col">Martes</th>
-            <th scope="col">Miercoles</th>
-            <th scope="col">Jueves</th>
-            <th scope="col">Viernes</th>
-            <th scope="col">Sabado</th>
-            <th scope="col">Domingo</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th class="table-info" scope="row"></th>
-            <td class="table-success"></td>
-            <td class="table-success"></td>
-            <td class="table-success"></td>
-            <td class="table-success"></td>
-            <td class="table-success"></td>
-            <td class="table-success"></td>
-            <td class="table-success"></td>
-        </tr>
-        <tr>
-            <th class="table-info" scope="row"></th>
-            <td class="table-success"></td>
-            <td class="table-success"></td>
-            <td class="table-success"></td>
-            <td class="table-success"></td>
-            <td class="table-success"></td>
-            <td class="table-success"></td>
-            <td class="table-success"></td>
-        </tr>
-        <tr>
-            <th class="table-info" scope="row"></th>
-            <td class="table-success"></td>
-            <td class="table-success"></td>
-            <td class="table-success"></td>
-            <td class="table-success"></td>
-            <td class="table-success"></td>
-            <td class="table-success"></td>
-            <td class="table-success"></td>
-        </tr>
-    </tbody>
-</table>
 
-<table class="table">
-    <thead>
-        <tr class="table-secondary">
-            <th scope="col">Horas</th>
-            <th scope="col"></th>
-            <th scope="col"></th>
-            <th scope="col"></th>
-            <th scope="col"></th>
-            <th scope="col"></th>
-            <th scope="col"></th>
-            <th scope="col"></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr class="table-success">
-            <th scope="row">8:00</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr class="table-success">
-            <th scope="row">8:30</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr class="table-success">
-            <th scope="row">9:00 </th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-    </tbody>
-</table>
+
+<table  class="table table-striped">
+    <tr>
+      <th scope="row" *ngFor="let item of citas">{{ item.agen_dia }}</th>
+    </tr>
+  
+    <tr>
+  
+      <th  *ngFor="let item of citas">
+          <tr *ngFor="let it of item.data"><a href="">
+            {{ it.agen_hora }} - {{ it.agen_estado }} 
+          </a></tr>
+         
+     </th>
+  
+    </tr>
+  </table>
