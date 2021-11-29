@@ -7,7 +7,7 @@ import { registerLocaleData } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { ComponentsModule } from '../components/components.module';
 import { PagesComponent } from './pages.component';
-
+import { NgbModal, ModalDismissReasons, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [

@@ -180,6 +180,11 @@ es
     return this.http.post(`${ base_url }/buscacitasall`, data); 
   }
 
+  reservaCitaTemp(data){
+        return this.http.post(`${ base_url }/reservatemporal`, data); 
+
+  }
+
 
 
 }

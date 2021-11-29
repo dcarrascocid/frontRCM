@@ -17,17 +17,15 @@ export class CalendarioComponent implements OnInit {
   @ViewChild('external') external: ElementRef;
   public events:any[];
   public options:any;
+  public citaReservada:any=null;
   @Input() public calendario:any;
   constructor( public UsuarioService :UsuarioService) { }
 
   ngOnInit() {
     this.options={
       businessHours: {
-        // days of week. an array of zero-based day of week integers (0=Sunday)
-        daysOfWeek: [ 1, 2, 3, 4 ], // Monday - Thursday
-      
-        startTime: '10:00', // a start time (10am in this example)
-        endTime: '18:00', // an end time (6pm in this example)
+        startTime: '08:00', // a start time (10am in this example)
+        endTime: '19:00', // an end time (6pm in this example)
       },
       plugins:[dayGridPlugin,timeGridPlugin, interactionPlugin],
       defaulDate:new Date(),
@@ -39,25 +37,14 @@ export class CalendarioComponent implements OnInit {
       },
       editable:true,
       defaultView:'timeGridWeek',
-      resources: [
-        {
-          id: 'a',
-          title: 'Resource A',
-          businessHours: {
-            startTime: '10:00',
-            endTime: '18:00'
-          }
-        },
-        {
-          id: 'b',
-          title: 'Resource B',
-          businessHours: {
-            startTime: '11:00',
-            endTime: '17:00',
-            daysOfWeek: [ 1, 3, 5 ] // Mon,Wed,Fri
-          }
-        }
-      ]
+
+      eventClick: function(info) {
+        // alert('Event: ' + info.event.id);
+        this.citaReservada=info.event.id;
+        console.log("cita ID", this.citaReservada);
+        // change the border color just for fun
+        info.el.style.borderColor = 'red';
+      }
      
     }
 
@@ -81,6 +68,7 @@ export class CalendarioComponent implements OnInit {
     console.log(model);
     alert('clic');
   }
+
   updateHeader() {
     this.options.header = {
       left: 'prev,next myCustomButton',
@@ -106,5 +94,11 @@ export class CalendarioComponent implements OnInit {
       alert('double click!');
     });
   }
+
+  // seleccionaCita(cita){
+  //   console.log("tester::::", cita);
+  // }
+
+
   
 }

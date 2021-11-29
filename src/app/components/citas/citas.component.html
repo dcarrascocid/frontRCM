@@ -38,7 +38,7 @@
             Identificación Paciente
         </div>
         <div class="card-body">
-            <form [formGroup]="consultaForm" (ngSubmit)="buscarBeneficiario()">
+            <form [formGroup]="consultaForm" (ngSubmit)="buscarBeneficiario(content)">
                 <div class="d-flex justify-content-center bd-highlight mb-2">
                     <div class="p-2 bd-highlight">
                         <div class="btn-group">
@@ -127,7 +127,7 @@
                         </div>
                     </div>
             </div>
-    <   /div>
+
         </div>
         <div class="col-sm-8">
             <div class="card">
@@ -141,3 +141,84 @@
         </div>
     </div>
 </div>
+<ng-template #content let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">PRE-AGENDAMIENTO</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+            <form>
+                <div class="row">
+                    <div class="form-group col-md-1"></div>
+                    <div class="form-group col-md-4">
+                        <label for="txtRut">Rut</label>
+                        <input type="text" class="form-control" id="txtRut">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="txtPaciente">Paciente</label>
+                        <input type="text" class="form-control" id="txtPaciente">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="txtNivel">Nivel</label>
+                        <input type="text" class="form-control" id="txtNivel">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-1"></div>
+                    <div class="form-group col-md-4">
+                        <label for="txtPrfesional">Profesional</label>
+                        <input type="text" class="form-control" id="txtProfesional">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="slcPrestacion">Prestacion</label>
+                        <select id="slcPrestacion" class="form-control">
+             <option selected>...</option>
+             <option>...</option>
+            </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="txtCodPrestacion">Código prestación</label>
+                        <input type="text" class="form-control" id="txtCodPrestacion">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2"></div>
+                    <div class="form-group col-md-3">
+                        <label for="txtValorT">Valor total</label>
+                        <input type="text" class="form-control" id="txtValorT">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="txtBonificacion">Bonificación</label>
+                        <input type="text" class="form-control" id="txtBonificacion">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="txtValorC">Valor Copago</label>
+                        <input type="text" class="form-control" id="txtValorC">
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="form-group col-md-2"></div>
+                    <div class="form-group col-md-4">
+                        <label for="txtFecha">Fecha</label>
+                        <input type="text" class="form-control" id="txtFecha">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="txtHora">Hora</label>
+                        <input type="text" class="form-control" id="txtHora">
+                    </div>
+                    <div class="form-group col-md-2"></div>
+                </div>
+                <div class="mb-4">
+                    <button type="submit" class="btn btn-success margenBoton">Comprar bono</button>
+                    <button type="submit" class="btn btn-secondary margenBoton">Copago</button>
+                    <button type="submit" class="btn btn-secondary">VOLVER</button>
+                </div>
+            </form>
+  
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cerrar</button>
+    </div>
+  </ng-template>

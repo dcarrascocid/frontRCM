@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { FormControl, FormGroup, Validators, FormGroupDirective, FormBuilder } from '@angular/forms';
 import { UtilService } from '../../services/util.service';
 import * as moment from 'moment';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
@@ -26,6 +27,7 @@ export class CitasComponent implements OnInit {
   public especialidad=null;
   public prestador=null;
   public citas:any=null;
+  public datosReserva:any;
   fecha =new Date;
   public fechaInicio = moment(this.fecha).format('YYYY-MM-DD');
   public ultimoDia  = new Date(this.fecha.getFullYear(), this.fecha.getMonth() + 1, 0);
@@ -40,6 +42,7 @@ export class CitasComponent implements OnInit {
     private formBuilder :FormBuilder,
     public UsuarioService :UsuarioService,
     public Utils: UtilService,
+    private modalService:NgbModal
     
     ) { 
       this.consultaForm = this.formBuilder.group({
@@ -72,9 +75,13 @@ export class CitasComponent implements OnInit {
       this.fechaInicio = moment(primerDia).format('YYYY-MM-DD');
       this.fechaTermino = moment(ultimoDia).format('YYYY-MM-DD');
 
-console.log("fecha1", this.fecha1.value);
+     
     }
 
+  enviar(content){
+    this.modalService.open(content, { size: 'lg' });
+
+  }
 
 
   obetnerToken(){
@@ -93,7 +100,8 @@ console.log("fecha1", this.fecha1.value);
       })
   }
 
-  buscarBeneficiario(){
+  buscarBeneficiario(content){
+    this.modalService.open(content, { size: 'lg' });
     const data ={
       rut:this.consultaForm.value.rut
     };
@@ -338,6 +346,17 @@ cambiaVer(data){
 if(data ==1){
   console.log("ver semana");
 }
+}
+
+reservaCitaTemporal(datos){
+  this.UsuarioService.reservaCitaTemp(datos).subscribe((resp:any)=>{
+    this.datosReserva.fechaCita=resp.data.agen_dia;
+    this.datosReserva.fechaHora=resp.data.agen_hora;
+    this.datosReserva.prof=resp.data.prof;
+    this.datosReserva.espe=resp.data.espe;
+    this.datosReserva.idcita=resp.data.agen_idagenda;
+
+  });
 }
 }
 

@@ -8,6 +8,8 @@ import { TablaResultadosComponent } from './tabla-resultados/tabla-resultados.co
 import { CalendarioComponent } from './calendario/calendario.component';
 import { FullCalendarModule } from 'primeng/fullcalendar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgbModal, ModalDismissReasons, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 
 @NgModule({
   declarations: [
