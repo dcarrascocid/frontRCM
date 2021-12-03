@@ -9,6 +9,7 @@ import { CalendarioComponent } from './calendario/calendario.component';
 import { FullCalendarModule } from 'primeng/fullcalendar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModal, ModalDismissReasons, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgxSpinnerModule } from "ngx-spinner";
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { NgbModal, ModalDismissReasons, NgbModule } from '@ng-bootstrap/ng-boots
     CommonModule,
     FormsModule, ReactiveFormsModule,
     FullCalendarModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NgxSpinnerModule
   ]
 })
 export class ComponentsModule { }

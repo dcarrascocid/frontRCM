@@ -5,6 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin ,  { Draggable } from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
 import { UsuarioService } from '../../services/usuario.service';
+import Swal from 'sweetalert2';
 
 
 
@@ -22,6 +23,7 @@ export class CalendarioComponent implements OnInit {
   constructor( public UsuarioService :UsuarioService) { }
 
   ngOnInit() {
+
     this.options={
       businessHours: {
         startTime: '08:00', // a start time (10am in this example)
@@ -38,18 +40,25 @@ export class CalendarioComponent implements OnInit {
       editable:true,
       defaultView:'timeGridWeek',
 
-      eventClick: function(info) {
-        // alert('Event: ' + info.event.id);
-        this.citaReservada=info.event.id;
-        console.log("cita ID", this.citaReservada);
-        // change the border color just for fun
-        info.el.style.borderColor = 'red';
-      }
-     
-    }
+      eventClick:this.handleEventClick.bind(this),
+      // eventClick: function(info) {
+      //   // alert('Event: ' + info.event.id);
+      //   this.citaReservada=info.event.id;
+      //   console.log("cita ID", this.citaReservada);
+ 
+      //   info.el.style.borderColor = 'red';
 
+      // }
+    }
+    
     this.updateEvents();
   }
+
+  get yearMonth(): string {
+    const dateObj = new Date();
+    return dateObj.getUTCFullYear() + '-' + (dateObj.getUTCMonth() + 1);
+  }
+
 
   updateEvents() {
     this.UsuarioService.DisparadorCitas.subscribe( data =>{
@@ -58,46 +67,52 @@ export class CalendarioComponent implements OnInit {
     });
   }
 
-  eventClick(model) {
-    console.log(model);
+  eventClick(event) {
+    console.log("TESTER:::::::::",event);
   }
+
   eventDragStop(model) {
     console.log(model);
   }
-  dateClick(model) {
-    console.log(model);
-    alert('clic');
-  }
 
-  updateHeader() {
-    this.options.header = {
-      left: 'prev,next myCustomButton',
-      center: 'title',
-      right: '',
-    };
+  handleEventClick(arg) {
+
+    if(arg.event._def.publicId){
+    this.UsuarioService.reservaCitaTemp(Number(arg.event._def.publicId), 'reserva').subscribe((resp:any)=>{
+        this.citaReservada = resp.data[0];
+        if(this.citaReservada.agen_idagenda){
+          Swal.fire({
+              title: this.citaReservada.fecha+' '+ this.citaReservada.agen_hora+' Dr:'+this.citaReservada.nombre_profesional+'('+this.citaReservada.especialidad+')', 
+              text: "¿Confirmar cita?",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: "Sí, Confirmar",
+              cancelButtonText: "Cancelar",
+          })
+          .then(resultado => {
+              if (resultado.value) {
+                this.UsuarioService.DisparadorCitasReservada.emit({ data:this.citaReservada });
+              } else {
+                this.UsuarioService.reservaCitaTemp(Number(arg.event._def.publicId), 'anula').subscribe((resp:any)=>{
+                  this.citaReservada = resp.data[0];
+                });
+                }
+          });
+        }
+    });
   }
-  updateEventos() {
-    this.events = [
-      {
-        title: 'Updaten Event',
-        start: this.yearMonth + '-08',
-        end: this.yearMonth + '-10',
-      },
-    ];
-  }
-  get yearMonth(): string {
-    const dateObj = new Date();
-    return dateObj.getUTCFullYear() + '-' + (dateObj.getUTCMonth() + 1);
-  }
-  dayRender(ev) {
-    ev.el.addEventListener('dblclick', () => {
-      alert('double click!');
+  if(!arg.event._def.publicId){
+    Swal.fire({
+      title: 'Error!',
+      text: 'Cita Asignada recientemente',
+      icon: 'error',
+      confirmButtonText: 'Cerrar'
     });
   }
 
-  // seleccionaCita(cita){
-  //   console.log("tester::::", cita);
-  // }
+  }
+
+
 
 
   

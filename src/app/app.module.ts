@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA  } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -9,6 +9,11 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms'; 
 import { NgbModal, ModalDismissReasons, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { NgxSpinnerModule } from "ngx-spinner";
+import { Routes } from '@angular/router';
+import { PagesComponent } from './pages/pages.component';
+import { CitasComponent } from './components/citas/citas.component';
+import { ConfirmacionCitaComponent } from './components/confirmacion-cita/confirmacion-cita.component';
 
 
 
@@ -25,8 +30,10 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     ComponentsModule,
     FormsModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule 
+    BrowserAnimationsModule,
+    NgxSpinnerModule
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
     
   ],

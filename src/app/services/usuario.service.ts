@@ -17,6 +17,9 @@ declare const gapi: any;
 })
 export class UsuarioService {
   @Output() DisparadorCitas: EventEmitter<any> = new EventEmitter(); 
+  @Output() DisparadorReserva: EventEmitter<any> = new EventEmitter(); 
+  @Output() DisparadorCitasReservada: EventEmitter<any> = new EventEmitter(); 
+  @Output() ReservaCitas: EventEmitter<any> = new EventEmitter(); 
   public auth2: any;
 
   constructor( private http: HttpClient, 
@@ -71,7 +74,6 @@ export class UsuarioService {
 
   }
 
-
   loginGoogle( token ) {
     
     return this.http.post(`${ base_url }/login/google`, { token } )
@@ -117,8 +119,7 @@ export class UsuarioService {
       pre_id:pre_id
     }
     return this.http.post(`${ base_url }/especialidadesprestador`, data);
-}
-es
+  }
 
   buscaSucursales(pre_id){
     const data={
@@ -126,8 +127,6 @@ es
     }
     return this.http.post(`${ base_url }/sucursales`, data);
   }
-
-
 
   BuscaPrestador(){
     return this.http.get(`${ base_url }/prestador`);
@@ -168,7 +167,7 @@ es
     return this.http.post(`${ base_url }/profespecialidad`, data); 
   }
   
- buscaPrestacionAll(){
+  buscaPrestacionAll(){
     return this.http.get(`${ base_url }/prestaciones`); 
   }  
 
@@ -180,11 +179,45 @@ es
     return this.http.post(`${ base_url }/buscacitasall`, data); 
   }
 
-  reservaCitaTemp(data){
-        return this.http.post(`${ base_url }/reservatemporal`, data); 
+  reservaCitaTemp(data, estado){
+    const form ={
+      cita_id:data,
+      estado:estado
+    };
+    console.log("data", form);
+    return this.http.post(`${ base_url }/reservatemporal`, form); 
 
   }
 
+  prestacionesfonasa(){
+    return this.http.get(`${ base_url }/prestacionesfonasa`); 
+  }
+
+  valorizarPrestacion(data, prestacion){
+
+    const form ={
+      rut: data.data.beneficiario.run,
+      idencuentro: data.idEncuentroMedico,
+      codigoprestacion: prestacion,
+      rutprestadortratante : data.rut,
+    };
+
+    return this.http.post(`${ base_url }/fon-valorizar-encuentro`, form); 
+   }
+
+
+   confirmarBono(data){
+        return this.http.post(`${ base_url }/fon-confirmar-pago`, data); 
+   }
+
+   buscarCopiaBono(folio){
+     const data ={
+       folio:folio
+     }
+    return this.http.post(`${ base_url }/fon-obtener-copia-bono`, data);   
+   }
+
+   
 
 
 }

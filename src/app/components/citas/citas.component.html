@@ -1,3 +1,5 @@
+<ngx-spinner></ngx-spinner>
+
 <div class="card text-center">
     <div class="row">
         <div class="col-sm-4">
@@ -110,7 +112,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="border">
+                        <!-- <div class="border">
                             <label for="">Georeferenciacion</label>
                             <div>
                                 <select name="regiones"  class="form-select" (change)="cambiaRegion($event.target.value)">
@@ -124,7 +126,7 @@
                                     <option [value]="item.com_idcomuna" *ngFor="let item of comunas">{{ item.com_nombrecorto}}</option>
                                 </select>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
             </div>
 
@@ -151,69 +153,63 @@
     <div class="modal-body">
             <form>
                 <div class="row">
-                    <div class="form-group col-md-1"></div>
                     <div class="form-group col-md-4">
-                        <label for="txtRut">Rut</label>
-                        <input type="text" class="form-control" id="txtRut">
+                        <label class="form-label" for="txtRut">Rut</label>
+                        <input type="text" class="form-control" id="txtRut" value="{{citasReservadas.run}}" disabled>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="txtPaciente">Paciente</label>
-                        <input type="text" class="form-control" id="txtPaciente">
+                        <label class="form-label"  for="txtPaciente">Paciente</label>
+                        <input type="text" class="form-control" id="txtPaciente" value="{{citasReservadas.beneficiario}}" disabled>
                     </div>
-                    <div class="form-group col-md-2">
-                        <label for="txtNivel">Nivel</label>
-                        <input type="text" class="form-control" id="txtNivel">
+                    <div class="form-group col-md-4">
+                        <label  class="form-label"  for="txtNivel">Nivel</label>
+                        <input type="text" class="form-control" id="txtNivel" value="{{citasReservadas.nivel}} " disabled>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-md-1"></div>
                     <div class="form-group col-md-4">
-                        <label for="txtPrfesional">Profesional</label>
-                        <input type="text" class="form-control" id="txtProfesional">
+                        <label class="form-label"  for="txtPrfesional">Profesional</label>
+                        <input type="text" class="form-control" id="txtProfesional" value="{{citasReservadas.nombre_profesional}}" disabled>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="slcPrestacion">Prestacion</label>
-                        <select id="slcPrestacion" class="form-control">
-             <option selected>...</option>
-             <option>...</option>
-            </select>
+                        <label class="form-label"  for="slcPrestacion">Prestacion</label>
+                          <input type="text" class="form-control" id="txtCodPrestacion" value="{{ citasReservadas.nombre }}" disabled>
                     </div>
-                    <div class="form-group col-md-2">
-                        <label for="txtCodPrestacion">Código prestación</label>
-                        <input type="text" class="form-control" id="txtCodPrestacion">
+                    <div class="form-group col-md-4">
+                        <label class="form-label"  for="txtCodPrestacion">Código Prestación</label>
+                        <input type="text" class="form-control" id="txtCodPrestacion" value="{{ citasReservadas.codigo }}" disabled>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-md-2"></div>
-                    <div class="form-group col-md-3">
-                        <label for="txtValorT">Valor total</label>
-                        <input type="text" class="form-control" id="txtValorT">
+                    <div class="form-group col-md-4">
+                        <label class="form-label"  for="txtValorT">Valor total</label>
+                        <input type="text" class="form-control" id="txtValorT" value="{{ citasReservadas.valortotal }}" disabled>
                     </div>
-                    <div class="form-group col-md-3">
-                        <label for="txtBonificacion">Bonificación</label>
-                        <input type="text" class="form-control" id="txtBonificacion">
+                    <div class="form-group col-md-4">
+                        <label class="form-label"  for="txtBonificacion">Bonificación</label>
+                        <input type="text" class="form-control" id="txtBonificacion" value="{{ citasReservadas.bonificacion }}"disabled>
                     </div>
-                    <div class="form-group col-md-2">
-                        <label for="txtValorC">Valor Copago</label>
-                        <input type="text" class="form-control" id="txtValorC">
+                    <div class="form-group col-md-4">
+                        <label class="form-label"  for="txtValorC">Valor Copago</label>
+                        <input type="text" class="form-control" id="txtValorC" value="{{ citasReservadas.copago }}" disabled>
                     </div>
                 </div>
                 <div class="row mb-4">
-                    <div class="form-group col-md-2"></div>
                     <div class="form-group col-md-4">
-                        <label for="txtFecha">Fecha</label>
-                        <input type="text" class="form-control" id="txtFecha">
+                        <label  class="form-label"  for="txtFecha">Fecha</label>
+                        <input type="text" class="form-control" id="txtFecha" value="{{ citasReservadas.fecha }}" disabled>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="txtHora">Hora</label>
-                        <input type="text" class="form-control" id="txtHora">
+                        <label class="form-label"  for="txtHora">Hora</label>
+                        <input type="text" class="form-control" id="txtHora" value="{{ citasReservadas.agen_hora }}" disabled>
                     </div>
                     <div class="form-group col-md-2"></div>
                 </div>
-                <div class="mb-4">
-                    <button type="submit" class="btn btn-success margenBoton">Comprar bono</button>
-                    <button type="submit" class="btn btn-secondary margenBoton">Copago</button>
-                    <button type="submit" class="btn btn-secondary">VOLVER</button>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md">
+                    <button (click)="confirmarPago()" class="btn btn-success">Comprar bono</button>
+                    <button class="btn btn-secondary">Copago</button>
+                    <button class="btn btn-danger">Volver</button>
                 </div>
             </form>
   

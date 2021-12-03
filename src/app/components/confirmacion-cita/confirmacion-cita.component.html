@@ -1,70 +1,34 @@
-<div class="border border-secondary rouded formulario">
-    <label class="preAgen" for="">PRE AGENDAMIENTO</label>
-    <form class="border border-primary rouded formularioAgen">
-        <div class="row">
-            <div class="form-group col-md-1"></div>
-            <div class="form-group col-md-4">
-                <label for="txtRut">Rut</label>
-                <input type="text" class="form-control" id="txtRut">
-            </div>
-            <div class="form-group col-md-4">
-                <label for="txtPaciente">Paciente</label>
-                <input type="text" class="form-control" id="txtPaciente">
-            </div>
-            <div class="form-group col-md-2">
-                <label for="txtNivel">Nivel</label>
-                <input type="text" class="form-control" id="txtNivel">
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-1"></div>
-            <div class="form-group col-md-4">
-                <label for="txtPrfesional">Profesional</label>
-                <input type="text" class="form-control" id="txtProfesional">
-            </div>
-            <div class="form-group col-md-4">
-                <label for="slcPrestacion">Prestacion</label>
-                <select id="slcPrestacion" class="form-control">
-     <option selected>...</option>
-     <option>...</option>
-    </select>
-            </div>
-            <div class="form-group col-md-2">
-                <label for="txtCodPrestacion">Código prestación</label>
-                <input type="text" class="form-control" id="txtCodPrestacion">
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-2"></div>
-            <div class="form-group col-md-3">
-                <label for="txtValorT">Valor total</label>
-                <input type="text" class="form-control" id="txtValorT">
-            </div>
-            <div class="form-group col-md-3">
-                <label for="txtBonificacion">Bonificación</label>
-                <input type="text" class="form-control" id="txtBonificacion">
-            </div>
-            <div class="form-group col-md-2">
-                <label for="txtValorC">Valor Copago</label>
-                <input type="text" class="form-control" id="txtValorC">
-            </div>
-        </div>
-        <div class="row mb-4">
-            <div class="form-group col-md-2"></div>
-            <div class="form-group col-md-4">
-                <label for="txtFecha">Fecha</label>
-                <input type="text" class="form-control" id="txtFecha">
-            </div>
-            <div class="form-group col-md-4">
-                <label for="txtHora">Hora</label>
-                <input type="text" class="form-control" id="txtHora">
-            </div>
-            <div class="form-group col-md-2"></div>
-        </div>
-        <div class="mb-4">
-            <button type="submit" class="btn btn-success margenBoton">Comprar bono</button>
-            <button type="submit" class="btn btn-secondary margenBoton">Copago</button>
-            <button type="submit" class="btn btn-secondary">VOLVER</button>
-        </div>
-    </form>
+<div class="container">
+    <div class="jumbotron">
+        <h1 class="display-4">Cita confirmada exitosamente!</h1>
+        <p class="lead"></p>
+        <dl class="row">
+            <dt class="col-sm-3">Paciente</dt>
+            <dd class="col-sm-9">{{ reserva.beneficiario}}.</dd>
+          
+            <dt class="col-sm-3">Cita Agendada</dt>
+            <dd class="col-sm-9">
+              <p>Dr. Juan andresd ( ortondoncia)</p>
+              <p>Fecha: 28/11/2021 15:00 hrs</p>
+            </dd>
+          
+            <dt class="col-sm-3">Descargar Bono</dt>
+            <dd class="col-sm-9"><button type="button" (click)="buscarBono()" class="btn btn-secondary  btn-sm">Descargar Bono</button>.</dd>
+          
+            <!-- <dt class="col-sm-3 text-truncate">Recomendaciones</dt>
+            <dd class="col-sm-9">This can be useful when space is tight. Adds an ellipsis at the end.</dd> -->
+          
+            <dt class="col-sm-3">Direccion Centro médico</dt>
+            <dd class="col-sm-9">
+              <dl class="row">
+                <dd class="col-sm-9">Avenida Las Condes # 8645, Las condes, Santiago.</dd>
+          
+              </dl>
+            </dd>
+          </dl>
+        <hr class="my-4">
+        <p class="lead">
+            <a class="btn btn-primary btn-lg" href="#" role="button">Pedir nueva cita</a>
+        </p>
+    </div>
 </div>

@@ -5,7 +5,8 @@ import { FormControl, FormGroup, Validators, FormGroupDirective, FormBuilder } f
 import { UtilService } from '../../services/util.service';
 import * as moment from 'moment';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
+import { NgxSpinnerService } from "ngx-spinner";
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-citas',
@@ -36,13 +37,17 @@ export class CitasComponent implements OnInit {
   fecha1 = new FormControl(this.fechaInicio, []); 
   fecha2 = new FormControl(this.fechaTermino, []); 
   public consultaForm: FormGroup;
-
+  public prestacionFonasa;
+  public codigoFonosa;
+  public citasReservadas:any;
 
   constructor(
     private formBuilder :FormBuilder,
     public UsuarioService :UsuarioService,
     public Utils: UtilService,
-    private modalService:NgbModal
+    private modalService:NgbModal,
+    private spinner: NgxSpinnerService,
+    private router:Router
     
     ) { 
       this.consultaForm = this.formBuilder.group({
@@ -55,10 +60,14 @@ export class CitasComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.spinner.show();
     this.obetnerToken();
     this.buscaPrestador();
     // this.fechas();
     this.buscaPrestacion();
+    this.buscarPrestacinesFonasa();
+    this.updateEvents();
+    this.spinner.hide();
   }
 
   get revItemForm(){
@@ -79,6 +88,7 @@ export class CitasComponent implements OnInit {
     }
 
   enviar(content){
+
     this.modalService.open(content, { size: 'lg' });
 
   }
@@ -101,22 +111,52 @@ export class CitasComponent implements OnInit {
   }
 
   buscarBeneficiario(content){
-    this.modalService.open(content, { size: 'lg' });
+    this.spinner.show();
+    // this.reservaCitaTemporal(this.)
+    if(!this.citasReservadas){
+      this.spinner.hide();
+      Swal.fire({
+        title: 'Error!',
+        text: 'Debe seleccionar una cita disponible',
+        icon: 'error',
+        confirmButtonText: 'Cerrar'
+      });
+    }
     const data ={
       rut:this.consultaForm.value.rut
     };
 
+    if(!data.rut){
+      this.spinner.hide();
+      Swal.fire({
+        title: 'Error!',
+        text: 'Debe Ingrear su RUT o Documento',
+        icon: 'error',
+        confirmButtonText: 'Cerrar'
+      });
+    }
+
     if(this.consultaForm.value.tipoDoc ==1){//es rut 
       this.UsuarioService.buscarbeneficiario(data).subscribe((resp:any)=>{
-        console.log("erspuesta",resp);
-          if(resp.ok){ // es fonasa
-            this.consultaForm.value.id_encuentro=resp.data.id_encuentro;
-            this.consultaForm.value.tipo='Fonasa'
-          console.log("this.adada", this.consultaForm);          }
-          if(!resp.ok){//no es fonasa
+          if(resp.codigo == 200){ // es fonasa
+            this.citasReservadas.idEncuentroMedico= resp.idEncuentroMedico;
+            this.citasReservadas.beneficiario = resp.data.beneficiario.nombres +' '+ resp.data.beneficiario.apellidos;
+            this.citasReservadas.run = resp.data.beneficiario.run;
+            this.citasReservadas.tramo =resp.data.beneficiario.tramo;
+            this.UsuarioService.valorizarPrestacion(resp, this.citasReservadas.codigo).subscribe((ret:any)=>{
+              console.log("RET:::", ret);
+            this.citasReservadas.nivel = ret.data.bonoValorizado.nivel;
+            this.citasReservadas.valortotal = ret.data.bonoValorizado.prestacionesValorizadas[0].montoTotal;
+            this.citasReservadas.copago =ret.data.bonoValorizado.prestacionesValorizadas[0].montoCopago;
+            this.citasReservadas.bonificacion =  ret.data.bonoValorizado.prestacionesValorizadas[0].montoBonificado;
+            });
+            this.spinner.hide();
+            this.modalService.open(content, { size: 'lg' });
+          }
+          if(!resp.data.ok){//no es fonasa
             Swal.fire({
               title: 'Error!',
-              text: resp.data,
+              text: resp.data.error,
               icon: 'error',
               confirmButtonText: 'Cerrar'
             });
@@ -167,13 +207,12 @@ export class CitasComponent implements OnInit {
       this.consultaForm.controls.rut.setErrors({'invalido': true});
     }
   }
-
+//CAMBIOS EN LISTAS
   cambiaPrestador(pre_id){
     if(pre_id){
       this.prestador=pre_id;
       this.BuscaRegionPrestador(pre_id);
       this.UsuarioService.buscaEspecialidadesPrestador(pre_id).subscribe((resp:any)=>{
-     
           this.especialidades=resp.data;
         });
  
@@ -277,52 +316,66 @@ if(pres_id){
 }
 
 buscarCita(){
- 
-  const data={
-    pre_id:this.prestador,
-    esp_id:this.especialidad,
-    fecha_inicio:this.fecha1.value,
-    fecha_termino:this.fecha2.value,
-    profesionales:this.profesionales,
-    pres_idprestacion:this.prestacion,
-  }; 
+  this.spinner.show();
 
-  if(this.profesional){
-console.log("entro en con pro");
-    this.UsuarioService.buscaCitasDisponiblesProf(data).subscribe((resp:any)=>{
-  if(resp.data.length ==0){
+  if(!this.prestador || !this.prestacion || !this.especialidad ){
     Swal.fire({
       title: 'Error!',
-      text: resp.mensaje,
+      text: 'Faltan datos para la busqueda',
       icon: 'error',
       confirmButtonText: 'Cerrar'
     });
-  }
-  this.citas=resp.data
 
+  }
+    const data={
+      pre_id:this.prestador,
+      esp_id:this.especialidad,
+      fecha_inicio:this.fecha1.value,
+      fecha_termino:this.fecha2.value,
+      profesionales:this.profesionales,
+      pres_idprestacion:this.prestacion,
+    }; 
+    
+  
+    if(this.profesional){
+  // console.log("entro en con pro");
+      this.UsuarioService.buscaCitasDisponiblesProf(data).subscribe((resp:any)=>{
+    if(resp.data.length ==0){
+      Swal.fire({
+        title: 'Error!',
+        text: resp.mensaje,
+        icon: 'error',
+        confirmButtonText: 'Cerrar'
+      });
+    }
+    this.citas=resp.data
+  
+            });
+    }
+    if(!this.profesional && this.profesionales){
+  
+      this.UsuarioService.buscaCitasDisponiblesAll(data).subscribe((resp:any)=>{
+        if(resp.data.length ==0){
+          Swal.fire({
+            title: 'Error!',
+            text: resp.mensaje,
+            icon: 'error',
+            confirmButtonText: 'Cerrar'
           });
-  }
-  if(!this.profesional && this.profesionales){
+        }
+        this.citas=resp.data
+        this.UsuarioService.DisparadorCitas.emit({
+          data:this.citas
+        })
+        console.log("citas", this.citas);
+  
+      });
+            
+  
+    }
+  
+ this.spinner.hide();
 
-    this.UsuarioService.buscaCitasDisponiblesAll(data).subscribe((resp:any)=>{
-      if(resp.data.length ==0){
-        Swal.fire({
-          title: 'Error!',
-          text: resp.mensaje,
-          icon: 'error',
-          confirmButtonText: 'Cerrar'
-        });
-      }
-      this.citas=resp.data
-      this.UsuarioService.DisparadorCitas.emit({
-        data:this.citas
-      })
-      console.log("citas", this.citas);
-
-              });
-          
-
-  }
   
 }
 
@@ -348,15 +401,68 @@ if(data ==1){
 }
 }
 
-reservaCitaTemporal(datos){
-  this.UsuarioService.reservaCitaTemp(datos).subscribe((resp:any)=>{
-    this.datosReserva.fechaCita=resp.data.agen_dia;
-    this.datosReserva.fechaHora=resp.data.agen_hora;
-    this.datosReserva.prof=resp.data.prof;
-    this.datosReserva.espe=resp.data.espe;
-    this.datosReserva.idcita=resp.data.agen_idagenda;
+// reservaCitaTemporal(datos){
+//   this.UsuarioService.reservaCitaTemp(datos, estado).subscribe((resp:any)=>{
+//     console.log("TESTER CITAS::::::", resp);
+//     this.datosReserva.fechaCita=resp.data.agen_dia;
+//     this.datosReserva.fechaHora=resp.data.agen_hora;
+//     this.datosReserva.prof=resp.data.prof;
+//     this.datosReserva.espe=resp.data.espe;
+//     this.datosReserva.idcita=resp.data.agen_idagenda;
 
+//   });
+// }
+
+buscarPrestacinesFonasa(){
+  this.UsuarioService.prestacionesfonasa().subscribe((resp:any)=>{
+    this.prestacionFonasa= resp.data;
   });
 }
+
+
+cambiaPrestacionFonasa(id){
+this.codigoFonosa=id;
+
+}
+
+updateEvents() {
+  this.UsuarioService.DisparadorCitasReservada.subscribe( (resp:any) =>{
+    console.log("recibiendo Reservas......", resp);
+    if(resp.data){
+        this.citasReservadas=resp.data;// this.events =data.data;
+      console.log("cirtas recibida", this.citasReservadas);
+    }
+  });
+}
+
+
+confirmarPago(){
+  this.spinner.show();
+  this.citasReservadas;
+  this.UsuarioService.confirmarBono(this.citasReservadas).subscribe((resp:any)=>{
+
+      this.citasReservadas.bono =resp.data;
+      this.UsuarioService.DisparadorReserva.emit({
+         data:  this.citasReservadas
+      });
+      console.log("respuesta DATA PAgo", resp.data);
+      this.modalService.dismissAll();
+      this.router.navigate(['/confirmacion']);
+      this.spinner.hide();
+   
+    if(!resp.data){
+      Swal.fire({
+        title: 'Error!',
+        text: 'No se pudo realizar el pago!!',
+        icon: 'error',
+        confirmButtonText: 'Cerrar'
+      });  
+    }
+})
+}
+
+
+
+
 }
 
