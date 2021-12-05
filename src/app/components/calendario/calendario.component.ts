@@ -6,7 +6,7 @@ import interactionPlugin ,  { Draggable } from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
 import { UsuarioService } from '../../services/usuario.service';
 import Swal from 'sweetalert2';
-
+import { NgxSpinnerService } from "ngx-spinner";
 
 
 @Component({
@@ -20,7 +20,10 @@ export class CalendarioComponent implements OnInit {
   public options:any;
   public citaReservada:any=null;
   @Input() public calendario:any;
-  constructor( public UsuarioService :UsuarioService) { }
+  constructor( 
+    public UsuarioService :UsuarioService,
+    private spinner: NgxSpinnerService,
+    ) { }
 
   ngOnInit() {
 
@@ -76,10 +79,11 @@ export class CalendarioComponent implements OnInit {
   }
 
   handleEventClick(arg) {
-
+      this.spinner.show();
     if(arg.event._def.publicId){
     this.UsuarioService.reservaCitaTemp(Number(arg.event._def.publicId), 'reserva').subscribe((resp:any)=>{
         this.citaReservada = resp.data[0];
+        this.spinner.hide();
         if(this.citaReservada.agen_idagenda){
           Swal.fire({
               title: this.citaReservada.fecha+' '+ this.citaReservada.agen_hora+' Dr:'+this.citaReservada.nombre_profesional+'('+this.citaReservada.especialidad+')', 
@@ -92,6 +96,7 @@ export class CalendarioComponent implements OnInit {
           .then(resultado => {
               if (resultado.value) {
                 this.UsuarioService.DisparadorCitasReservada.emit({ data:this.citaReservada });
+
               } else {
                 this.UsuarioService.reservaCitaTemp(Number(arg.event._def.publicId), 'anula').subscribe((resp:any)=>{
                   this.citaReservada = resp.data[0];

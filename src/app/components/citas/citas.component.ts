@@ -110,68 +110,7 @@ export class CitasComponent implements OnInit {
       })
   }
 
-  buscarBeneficiario(content){
-    this.spinner.show();
-    // this.reservaCitaTemporal(this.)
-    if(!this.citasReservadas){
-      this.spinner.hide();
-      Swal.fire({
-        title: 'Error!',
-        text: 'Debe seleccionar una cita disponible',
-        icon: 'error',
-        confirmButtonText: 'Cerrar'
-      });
-    }
-    const data ={
-      rut:this.consultaForm.value.rut
-    };
 
-    if(!data.rut){
-      this.spinner.hide();
-      Swal.fire({
-        title: 'Error!',
-        text: 'Debe Ingrear su RUT o Documento',
-        icon: 'error',
-        confirmButtonText: 'Cerrar'
-      });
-    }
-
-    if(this.consultaForm.value.tipoDoc ==1){//es rut 
-      this.UsuarioService.buscarbeneficiario(data).subscribe((resp:any)=>{
-          if(resp.codigo == 200){ // es fonasa
-            this.citasReservadas.idEncuentroMedico= resp.idEncuentroMedico;
-            this.citasReservadas.beneficiario = resp.data.beneficiario.nombres +' '+ resp.data.beneficiario.apellidos;
-            this.citasReservadas.run = resp.data.beneficiario.run;
-            this.citasReservadas.tramo =resp.data.beneficiario.tramo;
-            this.UsuarioService.valorizarPrestacion(resp, this.citasReservadas.codigo).subscribe((ret:any)=>{
-              console.log("RET:::", ret);
-            this.citasReservadas.nivel = ret.data.bonoValorizado.nivel;
-            this.citasReservadas.valortotal = ret.data.bonoValorizado.prestacionesValorizadas[0].montoTotal;
-            this.citasReservadas.copago =ret.data.bonoValorizado.prestacionesValorizadas[0].montoCopago;
-            this.citasReservadas.bonificacion =  ret.data.bonoValorizado.prestacionesValorizadas[0].montoBonificado;
-            });
-            this.spinner.hide();
-            this.modalService.open(content, { size: 'lg' });
-          }
-          if(!resp.data.ok){//no es fonasa
-            Swal.fire({
-              title: 'Error!',
-              text: resp.data.error,
-              icon: 'error',
-              confirmButtonText: 'Cerrar'
-            });
-          }       
-
-      });
-
-    }
-    if(this.consultaForm.value.tipoDoc == 2 ){ //direrente a rut
-
-    }
-    
-
-
-  }
   
   buscaEspecialidades(){
     this.UsuarioService.buscaEspecialidades().subscribe((resp:any)=>{
@@ -435,30 +374,119 @@ updateEvents() {
   });
 }
 
+buscarBeneficiario(content){
+  this.spinner.show();
+  // this.reservaCitaTemporal(this.)
+  if(!this.citasReservadas){
+    this.spinner.hide();
+    Swal.fire({
+      title: 'Error!',
+      text: 'Debe seleccionar una cita disponible',
+      icon: 'error',
+      confirmButtonText: 'Cerrar'
+    });
+  }
+  const data ={
+    rut:this.consultaForm.value.rut
+  };
+
+  if(!data.rut){
+    this.spinner.hide();
+    Swal.fire({
+      title: 'Error!',
+      text: 'Debe Ingrear su RUT o Documento',
+      icon: 'error',
+      confirmButtonText: 'Cerrar'
+    });
+  }
+
+  if(this.consultaForm.value.tipoDoc ==1){//es rut 
+    this.UsuarioService.buscarbeneficiario(data).subscribe((resp:any)=>{
+      console.log("BUSCA BENE::",resp);
+        if(resp.codigo == 200){ // es fonasa
+          this.citasReservadas.idEncuentroMedico= resp.idEncuentroMedico;
+          this.citasReservadas.beneficiario = resp.data.beneficiario.nombres +' '+ resp.data.beneficiario.apellidos;
+          this.citasReservadas.run = resp.data.beneficiario.run;
+          this.citasReservadas.tramo =resp.data.beneficiario.tramo;
+                  this.UsuarioService.valorizarPrestacion(resp, this.citasReservadas.codigo).subscribe((ret:any)=>{
+                   if(ret.codigo == 200){ 
+                    console.log("RET:::", ret);
+                  this.citasReservadas.nivel = ret.data.bonoValorizado.nivel;
+                  this.citasReservadas.valortotal = ret.data.bonoValorizado.prestacionesValorizadas[0].montoTotal;
+                  this.citasReservadas.copago =ret.data.bonoValorizado.prestacionesValorizadas[0].montoCopago;
+                  this.citasReservadas.bonificacion =  ret.data.bonoValorizado.prestacionesValorizadas[0].montoBonificado;
+                  this.spinner.hide();
+                  this.modalService.open(content, { size: 'lg' });
+                  }
+                  if(ret.codigo != 200){
+                    this.spinner.hide();
+                    Swal.fire({
+                      title: 'Error!',
+                      text: "No se pudop valorizar la prestación",
+                      icon: 'error',
+                      confirmButtonText: 'Cerrar'
+                    });
+                  }
+                  });
+
+        }
+        if(resp.codigo != 200 ){//no es fonasa
+          this.spinner.hide();
+          Swal.fire({
+            title: 'Error!',
+            text: "No es usuario Fonosa",
+            icon: 'error',
+            confirmButtonText: 'Cerrar'
+          });
+        }       
+
+    });
+
+  }
+  if(this.consultaForm.value.tipoDoc == 2 ){ //direrente a rut
+    this.spinner.hide();
+    Swal.fire({
+      title: 'Error!',
+      text: 'Por el momento solo debe ingresar Rut',
+      icon: 'error',
+      confirmButtonText: 'Cerrar'
+    });
+  }
+  
+
+
+}
 
 confirmarPago(){
   this.spinner.show();
   this.citasReservadas;
-  this.UsuarioService.confirmarBono(this.citasReservadas).subscribe((resp:any)=>{
-
-      this.citasReservadas.bono =resp.data;
-      this.UsuarioService.DisparadorReserva.emit({
-         data:  this.citasReservadas
-      });
-      console.log("respuesta DATA PAgo", resp.data);
-      this.modalService.dismissAll();
-      this.router.navigate(['/confirmacion']);
-      this.spinner.hide();
-   
-    if(!resp.data){
-      Swal.fire({
-        title: 'Error!',
-        text: 'No se pudo realizar el pago!!',
-        icon: 'error',
-        confirmButtonText: 'Cerrar'
-      });  
-    }
-})
+  if(this.citasReservadas){
+      this.UsuarioService.confirmarBono(this.citasReservadas).subscribe((resp:any)=>{
+      if(resp.codigo == 200){
+          this.citasReservadas.bono =resp.data;
+          // this.UsuarioService.DisparadorReserva.emit({data:this.citasReservadas });
+          this.UsuarioService.buscarCopiaBono(resp.data.bonoValorizado.folio).subscribe((bono:any)=>{
+            console.log("BONO:::", bono);
+            if(bono.codigo ==200){
+              window.open(bono.data.url, '_blank');
+              // this.router.navigate([bono.data.url]);
+            }
+          })
+          this.modalService.dismissAll();
+          this.router.navigate(['/confirmacion']);
+          this.spinner.hide();
+      }
+      if(resp.codigo != 200){
+        this.spinner.hide();
+        Swal.fire({
+          title: 'Error!',
+          text: 'No se pudo realizar el pago!!',
+          icon: 'error',
+          confirmButtonText: 'Cerrar'
+        });  
+      }
+  })
+  }
 }
 
 

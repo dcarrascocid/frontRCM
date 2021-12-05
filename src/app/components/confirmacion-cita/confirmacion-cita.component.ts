@@ -20,13 +20,13 @@ public reserva;
 
 
   getdatosConfirmacionCita(){
-    console.log("BUSCAR");
-    this.UsuarioService.DisparadorReserva.subscribe( (data:any) =>{
-      console.log("recibiendo reserva......", data);
+    
+    this.UsuarioService.DisparadorReserva.subscribe((data:any) => {
+      console.log("dESPARADOR DE BONO", data);
       this.reserva=data.data;
     });
-    console.log("this.reswerva", this.reserva);
 
+    console.log("DSIPARADRRESERVA", this.reserva);
   }
 
   buscarBono(){
