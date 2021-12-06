@@ -34,7 +34,7 @@ public reserva;
         if(!this.reserva){
           Swal.fire({
             title: 'Error!',
-            text: 'No exite copia de bono',
+            text: 'No existe copia de bono',
             icon: 'error',
             confirmButtonText: 'Cerrar'
           });

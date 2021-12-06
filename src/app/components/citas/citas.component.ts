@@ -40,6 +40,8 @@ export class CitasComponent implements OnInit {
   public prestacionFonasa;
   public codigoFonosa;
   public citasReservadas:any;
+  public calendar:boolean=false;
+
 
   constructor(
     private formBuilder :FormBuilder,
