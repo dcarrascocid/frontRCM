@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap, map, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -16,7 +16,10 @@ declare const gapi: any;
   providedIn: 'root'
 })
 export class UsuarioService {
-
+  @Output() DisparadorCitas: EventEmitter<any> = new EventEmitter(); 
+  @Output() DisparadorReserva: EventEmitter<any> = new EventEmitter(); 
+  @Output() DisparadorCitasReservada: EventEmitter<any> = new EventEmitter(); 
+  @Output() ReservaCitas: EventEmitter<any> = new EventEmitter(); 
   public auth2: any;
 
   constructor( private http: HttpClient, 
@@ -71,7 +74,6 @@ export class UsuarioService {
 
   }
 
-
   loginGoogle( token ) {
     
     return this.http.post(`${ base_url }/login/google`, { token } )
@@ -112,14 +114,19 @@ export class UsuarioService {
       return this.http.get(`${ base_url }/especialidades`);
   }
 
+  buscaEspecialidadesPrestador(pre_id){
+    const data ={
+      pre_id:pre_id
+    }
+    return this.http.post(`${ base_url }/especialidadesprestador`, data);
+  }
+
   buscaSucursales(pre_id){
     const data={
       pre_id:pre_id
     }
     return this.http.post(`${ base_url }/sucursales`, data);
   }
-
-
 
   BuscaPrestador(){
     return this.http.get(`${ base_url }/prestador`);
@@ -160,7 +167,58 @@ export class UsuarioService {
     return this.http.post(`${ base_url }/profespecialidad`, data); 
   }
   
- buscaPrestacionAll(){
+  buscaPrestacionAll(){
     return this.http.get(`${ base_url }/prestaciones`); 
   }  
+
+  buscaCitasDisponiblesProf(data){
+    return this.http.post(`${ base_url }/buscacitasprofe`, data); 
+  }  
+
+  buscaCitasDisponiblesAll(data){
+    return this.http.post(`${ base_url }/buscacitasall`, data); 
+  }
+
+  reservaCitaTemp(data, estado){
+    const form ={
+      cita_id:data,
+      estado:estado
+    };
+    console.log("data", form);
+    return this.http.post(`${ base_url }/reservatemporal`, form); 
+
+  }
+
+  prestacionesfonasa(){
+    return this.http.get(`${ base_url }/prestacionesfonasa`); 
+  }
+
+  valorizarPrestacion(data, prestacion){
+
+    const form ={
+      rut: data.data.beneficiario.run,
+      idencuentro: data.idEncuentroMedico,
+      codigoprestacion: prestacion,
+      rutprestadortratante : data.rut,
+    };
+
+    return this.http.post(`${ base_url }/fon-valorizar-encuentro`, form); 
+   }
+
+
+   confirmarBono(data){
+        return this.http.post(`${ base_url }/fon-confirmar-pago`, data); 
+   }
+
+   buscarCopiaBono(folio){
+     const data ={
+       folio:folio
+     }
+    return this.http.post(`${ base_url }/fon-obtener-copia-bono`, data);   
+   }
+
+   
+
+
 }
+

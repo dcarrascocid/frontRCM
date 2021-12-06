@@ -1,0 +1,12 @@
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <!-- <button class="btn btn-success" (click)="updateEvents()">Ver Citas</button> -->
+      <p-fullCalendar 
+      [events]="events" 
+      [options]="options"
+      eventClick="eventClick($event)"
+       ></p-fullCalendar>
+    </div>
+</div>
+</div>

@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { UsuarioService } from '../../services/usuario.service';
+import Swal from 'sweetalert2';
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: 'app-confirmacion-cita',
@@ -6,10 +9,39 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./confirmacion-cita.component.scss']
 })
 export class ConfirmacionCitaComponent implements OnInit {
-
-  constructor() { }
+public reserva;
+  constructor(
+    public UsuarioService :UsuarioService
+  ) { }
 
   ngOnInit() {
+  this.getdatosConfirmacionCita();
+  }
+
+
+  getdatosConfirmacionCita(){
+    
+    this.UsuarioService.DisparadorReserva.subscribe((data:any) => {
+      console.log("dESPARADOR DE BONO", data);
+      this.reserva=data.data;
+    });
+
+    console.log("DSIPARADRRESERVA", this.reserva);
+  }
+
+  buscarBono(){
+    console.log("this.", this.reserva);
+        if(!this.reserva){
+          Swal.fire({
+            title: 'Error!',
+            text: 'No existe copia de bono',
+            icon: 'error',
+            confirmButtonText: 'Cerrar'
+          });
+        }
+        this.UsuarioService.buscarCopiaBono(this.reserva.folio).subscribe((resp:any)=>{
+
+            })
   }
 
 }
