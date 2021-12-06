@@ -2,9 +2,38 @@
     <div class="page-wrapper">
         <div class="container-fluid">
             <!-- Breadcrumbs -->
+
+
+            <!--
+            Inicio de funcionalidades para centros medicos    
+            -->
+            <!--Login para centros medicos-->
+            <app-login></app-login>
+
+            <!--Pagina mostrada al inicar sesion como centro medico-->
+            <app-ficha-clinica></app-ficha-clinica>
+
+            <!--Sobrecupo de centros medicos-->
+            <app-citas-centros-medicos></app-citas-centros-medicos>
+            <!--
+            Fin de funcionalidades para centros medicos    
+            -->
+
+            <!--
+            Inicio funcionalidades para usuarios    
+            -->
+
+            <!--Pantalla de Agendamiento de citas-->
             <app-citas></app-citas>
-            -----------------------
+
+            <!--Pop-up´s de Pre agendamiento-->
             <app-confirmacion-cita></app-confirmacion-cita>
+
+            <!--
+            Fin de funcionalidades de usuario    
+            -->
+
+
             <!-- Mi sistema de rutas -->
             <!-- <router-outlet></router-outlet> -->
 
@@ -25,7 +54,7 @@
         <!-- ============================================================== -->
         <!-- footer -->
         <!-- ============================================================== -->
-        <footer class="footer">
+        <footer class="footer text-center">
             © 2021 CRM
         </footer>
         <!-- ============================================================== -->

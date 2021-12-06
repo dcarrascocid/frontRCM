@@ -7,19 +7,19 @@ import { CitasComponent } from '../components/citas/citas.component';
 
 const routes: Routes = [
     { 
-        path: 'dashboard', 
-        component: PagesComponent,
-        children: [
-            { path: '', component: CitasComponent, data: { titulo: 'citas' } },   
+        path:'dashboard', 
+        component:PagesComponent,
+        children:[
+            { path:'',component: CitasComponent, data:{titulo:'citas'} },   
 
         ]
     },
 ];
 
 @NgModule({
-    imports: [ RouterModule.forChild(routes) ],
-    exports: [ RouterModule ]
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule]
 })
-export class PagesRoutingModule {}
+export class PagesRoutingModule{}
 
 
