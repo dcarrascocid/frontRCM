@@ -278,7 +278,6 @@ buscarCita(){
       id_pro:null
     }; 
     
-  console.log("PROF", this.profesional);
     if(this.profesional){
   // console.log("entro en con pro");
       data.id_pro =this.profesional;
