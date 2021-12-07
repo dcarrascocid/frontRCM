@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "reservacitas"
+    }
+  },
+  "defaultProject": "reservacitas",
+  "cli": {
+    "analytics": "0c3eb7fd-b944-4c06-aa94-52828ae7634d"
+  }
 }
