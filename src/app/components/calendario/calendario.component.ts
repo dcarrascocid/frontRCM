@@ -42,6 +42,7 @@ export class CalendarioComponent implements OnInit {
       },
       editable:true,
       defaultView:'timeGridWeek',
+      timeFormat: 'H(:mm)',
 
       eventClick:this.handleEventClick.bind(this),
       // eventClick: function(info) {

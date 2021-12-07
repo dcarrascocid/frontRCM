@@ -275,13 +275,15 @@ buscarCita(){
       fecha_termino:this.fecha2.value,
       profesionales:this.profesionales,
       pres_idprestacion:this.prestacion,
+      id_pro:null
     }; 
     
-  
+  console.log("PROF", this.profesional);
     if(this.profesional){
   // console.log("entro en con pro");
+      data.id_pro =this.profesional;
       this.UsuarioService.buscaCitasDisponiblesProf(data).subscribe((resp:any)=>{
-    if(resp.data.length ==0){
+    if(resp.codigo != 200){
       Swal.fire({
         title: 'Error!',
         text: resp.mensaje,
@@ -436,7 +438,7 @@ buscarBeneficiario(content){
           this.spinner.hide();
           Swal.fire({
             title: 'Error!',
-            text: "No es usuario Fonosa",
+            text: resp.mensaje,
             icon: 'error',
             confirmButtonText: 'Cerrar'
           });
