@@ -40,7 +40,7 @@
             Identificación Paciente
         </div>
         <div class="card-body">
-            <form [formGroup]="consultaForm" (ngSubmit)="buscarBeneficiario(content)">
+            <form [formGroup]="consultaForm" (ngSubmit)="buscarBeneficiario(content, content1)">
                 <div class="d-flex justify-content-center bd-highlight mb-2">
                     <div class="p-2 bd-highlight">
                         <div class="btn-group">
@@ -58,7 +58,7 @@
                         <span *ngIf="revItemForm.rut.errors.invalido">Rut no valido</span> 
                     </div>
                     <div class="d-grid gap-2 col-6 mx-auto">
-                    <button class="btn btn-primary position-relative"  type="submit">Enviar</button>
+                    <button class="btn btn-primary position-relative"  [disabled]="!botonEnviar" type="submit">Enviar</button>
                      <!-- <input class="form-control" type="text"  [(ngModel)]="consultaForm.rut.val"  (change)="validarRut()" maxlength="12" [required]="true" (keyup.enter)="buscarBeneficiario(buscarPac.value)" #buscarPac placeholder="ingrese numero de documento"/> -->
                                 <!-- <button class="btn btn-outline-primary" type="button" (click)="buscarBeneficiario(buscarPac.value)">Enviar</button> -->
                      
@@ -213,6 +213,66 @@
                 </div>
             </form>
   
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cerrar</button>
+    </div>
+  </ng-template>
+
+  <ng-template #content1 let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">IDENTIFACACIÓN PACIENTE</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        
+            <form [formGroup]="pacienteForm" (ngSubmit)="guradaDatosPaciente(content)">
+                <div class="row">
+                    <div class="btn-group">
+                        <input type="radio" class="btn-check" formControlName="res_tipo_doc"  value="1"  autocomplete="off" checked>
+                        <label  >RUT</label>
+                        <input type="radio" class="btn-check" formControlName="res_tipo_doc" value="2" autocomplete="off">
+                        <label >OTRO DOCUMENTO</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-label" for="txtRut">Rut</label>
+                        <input type="text" class="form-control"  formControlName="res_numerodocumento" value="" >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-label"  for="txtPaciente">digito verificador</label>
+                        <input type="text" class="form-control"  formControlName="res_num_docdv" value="" >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-label"  for="txtPaciente">Apellido Paterno</label>
+                        <input type="text" class="form-control"  formControlName="res_paterno" value="" >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-label"  for="txtPaciente">Apellido Materno</label>
+                        <input type="text" class="form-control"  formControlName="res_materno" value="" >
+                    </div>
+
+                </div>
+                <div  class="row">
+                    <div class="form-group col-md-3">
+                        <label class="form-label"  for="txtPaciente">Nombres</label>
+                        <input type="text" class="form-control"  formControlName="res_nombres" value="" >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-label" for="txtRut">telefono</label>
+                        <input type="text" class="form-control"  formControlName="res_telefono" value="" >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label  class="form-label"  for="txtNivel">Correo Electronico</label>
+                        <input type="text" class="form-control" formControlName="res_correo" value="" >
+                    </div>
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md">
+                    <button type="submit" class="btn btn-success">Guardar Datos</button>
+                </div>
+            </form>
+         
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cerrar</button>

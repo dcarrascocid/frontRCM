@@ -30,6 +30,7 @@ export class CitasComponent implements OnInit {
   public citas:any=null;
   public datosReserva:any;
   fecha =new Date;
+  public botonEnviar:boolean=false;
   public fechaInicio = moment(this.fecha).format('YYYY-MM-DD');
   public ultimoDia  = new Date(this.fecha.getFullYear(), this.fecha.getMonth() + 1, 0);
   public fechaTermino=moment(this.ultimoDia).format('YYYY-MM-DD');
@@ -37,6 +38,7 @@ export class CitasComponent implements OnInit {
   fecha1 = new FormControl(this.fechaInicio, []); 
   fecha2 = new FormControl(this.fechaTermino, []); 
   public consultaForm: FormGroup;
+  public pacienteForm:FormGroup;
   public prestacionFonasa;
   public codigoFonosa;
   public citasReservadas:any;
@@ -56,6 +58,18 @@ export class CitasComponent implements OnInit {
         rut:[''],
         tipoDoc:[1],
         id_encuentro:null  
+      });
+
+      this.pacienteForm = this.formBuilder.group({
+        res_tipo_doc:null,
+        res_numerodocumento:null,
+        res_numdocdv:null,
+        res_monbres:null,
+        res_paterno:null,
+        res_materno:null,
+        res_correo:null,
+        res_telefono:null,
+
       });
 
 
@@ -278,9 +292,8 @@ buscarCita(){
       id_pro:null
     }; 
     
-  console.log("PROF", this.profesional);
+  console.log("PROF", this.profesional, this.profesionales);
     if(this.profesional){
-  // console.log("entro en con pro");
       data.id_pro =this.profesional;
       this.UsuarioService.buscaCitasDisponiblesProf(data).subscribe((resp:any)=>{
     if(resp.codigo != 200){
@@ -296,7 +309,7 @@ buscarCita(){
             });
     }
     if(!this.profesional && this.profesionales){
-  
+
       this.UsuarioService.buscaCitasDisponiblesAll(data).subscribe((resp:any)=>{
         if(resp.data.length ==0){
           Swal.fire({
@@ -370,15 +383,16 @@ this.codigoFonosa=id;
 
 updateEvents() {
   this.UsuarioService.DisparadorCitasReservada.subscribe( (resp:any) =>{
-    console.log("recibiendo Reservas......", resp);
     if(resp.data){
         this.citasReservadas=resp.data;// this.events =data.data;
-      console.log("cirtas recibida", this.citasReservadas);
+        this.botonEnviar = true;
     }
   });
 }
 
-buscarBeneficiario(content){
+buscarBeneficiario(content, content1){
+  console.log("content", content);
+  console.log("content2", content1);
   this.spinner.show();
   // this.reservaCitaTemporal(this.)
   if(!this.citasReservadas){
@@ -436,12 +450,13 @@ buscarBeneficiario(content){
         }
         if(resp.codigo != 200 ){//no es fonasa
           this.spinner.hide();
-          Swal.fire({
-            title: 'Error!',
-            text: resp.mensaje,
-            icon: 'error',
-            confirmButtonText: 'Cerrar'
-          });
+          // Swal.fire({
+          //   title: 'Error!',
+          //   text: resp.mensaje,
+          //   icon: 'error',
+          //   confirmButtonText: 'Cerrar'
+          // });
+          this.modalService.open(content1, { size: 'lg' });
         }       
 
     });
@@ -468,7 +483,9 @@ confirmarPago(){
       this.UsuarioService.confirmarBono(this.citasReservadas).subscribe((resp:any)=>{
       if(resp.codigo == 200){
           this.citasReservadas.bono =resp.data;
+
           // this.UsuarioService.DisparadorReserva.emit({data:this.citasReservadas });
+          localStorage.setItem("reserva",  JSON.stringify(this.citasReservadas))
           this.UsuarioService.buscarCopiaBono(resp.data.bonoValorizado.folio).subscribe((bono:any)=>{
             console.log("BONO:::", bono);
             if(bono.codigo ==200){
@@ -477,7 +494,7 @@ confirmarPago(){
             }
           })
           this.modalService.dismissAll();
-          this.router.navigate(['/confirmacion']);
+          this.router.navigate(['/reservas/confirmacion']);
           this.spinner.hide();
       }
       if(resp.codigo != 200){
@@ -493,6 +510,29 @@ confirmarPago(){
   }
 }
 
+guradaDatosPaciente(content){
+  this.spinner.show();
+            const data = {
+            res_tipo_doc:this.pacienteForm.value.res_tipo_doc, 
+            res_numerodocumento:this.pacienteForm.value.res_numerodocumento,
+            res_num_docdv:this.pacienteForm.value.res_num_docdv, 
+            nombres:this.pacienteForm.value.res_nombres,
+            paterno:this.pacienteForm.value.res_paterno,
+            materno:this.pacienteForm.value.res_materno,
+            res_correo:this.pacienteForm.value.res_correo,
+            res_telefono:this.pacienteForm.value.res_telefono
+            }
+  this.UsuarioService.guardarPacienteParticuluar(data).subscribe((resp:any)=>{
+    if(resp.data.codigo ==200){
+      this.citasReservadas.beneficiario = this.pacienteForm.value.res_nombres,' ',this.pacienteForm.value.res_paterno,' ',this.pacienteForm.value.res_materno;
+      this.citasReservadas.run = this.pacienteForm.value.res_numerodocumento, '-',this.pacienteForm.value.res_numdocdv;
+      this.citasReservadas.tramo = 'PARTICULAR'
+      this.spinner.hide();
+      this.modalService.open(content, { size: 'lg' });
+    }
+
+  });
+}
 
 
 

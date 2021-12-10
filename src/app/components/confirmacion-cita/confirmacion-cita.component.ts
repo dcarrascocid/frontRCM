@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UsuarioService } from '../../services/usuario.service';
 import Swal from 'sweetalert2';
 import { NgxSpinnerService } from "ngx-spinner";
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-confirmacion-cita',
@@ -10,8 +11,12 @@ import { NgxSpinnerService } from "ngx-spinner";
 })
 export class ConfirmacionCitaComponent implements OnInit {
 public reserva;
+
   constructor(
-    public UsuarioService :UsuarioService
+    public UsuarioService :UsuarioService,
+    private spinner: NgxSpinnerService,  
+    private router:Router
+
   ) { }
 
   ngOnInit() {
@@ -20,17 +25,12 @@ public reserva;
 
 
   getdatosConfirmacionCita(){
-    
-    this.UsuarioService.DisparadorReserva.subscribe((data:any) => {
-      console.log("dESPARADOR DE BONO", data);
-      this.reserva=data.data;
-    });
-
-    console.log("DSIPARADRRESERVA", this.reserva);
+    this.reserva = JSON.parse(localStorage.getItem('reserva')); 
+    localStorage.clear();
   }
 
   buscarBono(){
-    console.log("this.", this.reserva);
+ this.spinner.show();
         if(!this.reserva){
           Swal.fire({
             title: 'Error!',
@@ -39,9 +39,24 @@ public reserva;
             confirmButtonText: 'Cerrar'
           });
         }
-        this.UsuarioService.buscarCopiaBono(this.reserva.folio).subscribe((resp:any)=>{
-
+        this.UsuarioService.buscarCopiaBono(this.reserva.bono.bonoValorizado.folio).subscribe((resp:any)=>{
+          if(resp.codigo == 200){
+            this.spinner.hide();
+            window.open(resp.data.url, '_blank');
+          }
+          if(resp.codigo != 200){
+            Swal.fire({
+              title: 'Error!',
+              text: resp.data.mensaje,
+              icon: 'error',
+              confirmButtonText: 'Cerrar'
+            });
+          }
             })
+  }
+
+  volver(){
+    this.router.navigate(['/reservas/citas']);
   }
 
 }

@@ -13,14 +13,8 @@ const routes: Routes = [
         children: [
             { path: 'citas', component: CitasComponent, data: { titulo: 'citas' } },   
             { path: 'confirmacion', component: ConfirmacionCitaComponent, data: { titulo: 'Confirmacion' } },   
-
         ]
-   
-
-    },
-    { 
-    path: 'confirmacion', component: ConfirmacionCitaComponent, data: { titulo: 'Confirmacion' } 
-    },
+    }
 ];
 
 @NgModule({

@@ -8,6 +8,9 @@ import { SharedModule } from '../shared/shared.module';
 import { ComponentsModule } from '../components/components.module';
 import { PagesComponent } from './pages.component';
 import { NgbModal, ModalDismissReasons, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { PagesRoutingModule } from './pages.routing';
+
+
 
 @NgModule({
   declarations: [
@@ -23,6 +26,7 @@ import { NgbModal, ModalDismissReasons, NgbModule } from '@ng-bootstrap/ng-boots
     FormsModule,
     SharedModule,
     ComponentsModule,
+    PagesRoutingModule
 
   ]
 })

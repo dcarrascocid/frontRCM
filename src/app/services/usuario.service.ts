@@ -217,6 +217,10 @@ export class UsuarioService {
     return this.http.post(`${ base_url }/fon-obtener-copia-bono`, data);   
    }
 
+   guardarPacienteParticuluar(data){
+    return this.http.post(`${ base_url }/pacienteparticular`, data); 
+   }
+
    
 
 

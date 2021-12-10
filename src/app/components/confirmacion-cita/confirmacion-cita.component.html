@@ -3,32 +3,40 @@
         <h1 class="display-4">Cita confirmada exitosamente!</h1>
         <p class="lead"></p>
         <dl class="row">
-            <!-- <dt class="col-sm-3">Paciente</dt>
+            <dt class="col-sm-3">Paciente</dt>
             <dd class="col-sm-9">{{ reserva.beneficiario}}.</dd>
           
-            <dt class="col-sm-3">Cita Agendada</dt>
+            <dt class="col-sm-3">Profesional</dt>
             <dd class="col-sm-9">
-              <p>Dr. Juan andresd ( ortondoncia)</p>
-              <p>Fecha: 28/11/2021 15:00 hrs</p>
+              <p>{{ reserva.nombre_profesional }} </p>
             </dd>
+            <dt class="col-sm-3">Especialidad</dt>
+            <dd class="col-sm-9">
+              <p>{{ reserva.especialidad }} </p>
+
+              <dt class="col-sm-3">Fecha</dt>
+              <dd class="col-sm-9">
+                <p>{{ reserva.fecha }} </p>
+                <p>{{ reserva.agen_hora }} Hrs. </p>
+              </dd>
           
-            <dt class="col-sm-3">Descargar Bono</dt> -->
-            <!-- <dd class="col-sm-9"><button type="button" (click)="buscarBono()" class="btn btn-secondary  btn-sm">Descargar Bono</button>.</dd> -->
+             <dt class="col-sm-3">Descargar Bono</dt> 
+            <dd class="col-sm-9"><button type="button" (click)="buscarBono()" class="btn btn-secondary  btn-sm">Descargar Bono</button>.</dd>
           
             <!-- <dt class="col-sm-3 text-truncate">Recomendaciones</dt>
             <dd class="col-sm-9">This can be useful when space is tight. Adds an ellipsis at the end.</dd> -->
           
-            <dt class="col-sm-3">Direccion Centro médico</dt>
+            <!-- <dt class="col-sm-3">Direccion Centro médico</dt>
             <dd class="col-sm-9">
               <dl class="row">
                 <dd class="col-sm-9">Avenida Las Condes # 8645, Las condes, Santiago.</dd>
           
               </dl>
-            </dd>
+            </dd> -->
           </dl>
         <hr class="my-4">
         <p class="lead">
-            <a class="btn btn-primary btn-lg" href="#" role="button">Pedir nueva cita</a>
+            <a class="btn btn-primary btn-lg" (click)="volver()" role="button">Pedir nueva cita</a>
         </p>
     </div>
 </div>
