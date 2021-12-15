@@ -292,10 +292,7 @@ buscarCita(){
       id_pro:null
     }; 
     
-<<<<<<< HEAD
-  console.log("PROF", this.profesional, this.profesionales);
-=======
->>>>>>> 385b51d0013f490cc9ff26adb07c02b627cfccdd
+
     if(this.profesional){
       data.id_pro =this.profesional;
       this.UsuarioService.buscaCitasDisponiblesProf(data).subscribe((resp:any)=>{
