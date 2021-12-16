@@ -78,7 +78,7 @@ export class CitasComponent implements OnInit {
   ngOnInit() {
     this.spinner.show();
     this.obetnerToken();
-    this.buscaPrestador();
+    this.BuscaSucursalesByPrestador();
     // this.fechas();
     this.buscaPrestacion();
     this.buscarPrestacinesFonasa();
@@ -89,6 +89,48 @@ export class CitasComponent implements OnInit {
   get revItemForm(){
     return this.consultaForm.controls;
   }
+
+  BuscaSucursalesByPrestador(){
+      this.UsuarioService.BuscaSucursalesByPrestador().subscribe((resp:any)=>{
+      if(resp.codigo == 200){
+        this.prestadores = resp.data;
+      }
+      if(resp.codigo!= 200){
+        Swal.fire({
+          title: 'Error!',
+          text: resp.mensaje,
+          icon: 'error',
+          confirmButtonText: 'Cerrar'
+        })
+      }
+
+    });
+  }
+
+
+  cambiaSucursal(suc_id){
+    if(suc_id){
+      this.buscarRegionbySucursal(50);
+    }
+    if(!suc_id){}
+  }
+  
+
+
+  //CAMBIOS EN LISTAS
+  cambiaPrestador(pre_id){
+    if(pre_id){
+      this.prestador=pre_id;
+      this.buscarRegionbySucursal(pre_id);
+      this.UsuarioService.buscaEspecialidadesPrestador(pre_id).subscribe((resp:any)=>{
+          this.especialidades=resp.data;
+        });
+ 
+
+    }
+  }
+  
+
 
   fechas(){
     
@@ -146,14 +188,7 @@ export class CitasComponent implements OnInit {
   }
 
 
-  buscaPrestador(){
-  
-    this.UsuarioService.BuscaPrestador().subscribe((resp:any)=>{
-      // console.log("Res  Espe",resp);
-      this.prestadores = resp.data;
 
-    });
-  }
 
   validarRut()
   {
@@ -162,18 +197,7 @@ export class CitasComponent implements OnInit {
       this.consultaForm.controls.rut.setErrors({'invalido': true});
     }
   }
-//CAMBIOS EN LISTAS
-  cambiaPrestador(pre_id){
-    if(pre_id){
-      this.prestador=pre_id;
-      this.BuscaRegionPrestador(pre_id);
-      this.UsuarioService.buscaEspecialidadesPrestador(pre_id).subscribe((resp:any)=>{
-          this.especialidades=resp.data;
-        });
- 
 
-    }
-  }
 
  cambiaRegion(reg_idregion){
   if(reg_idregion){
@@ -207,6 +231,17 @@ BuscaRegionPrestador(pre_id){
       this.regiones= resp.data;
 
     });
+}
+
+buscarRegionbySucursal(suc_id){
+  this.UsuarioService.buscarRegionbySucursal(suc_id).subscribe((resp:any)=>{
+    if(resp.codigo == 200){
+      this.regiones= resp.data;
+    }
+    if(resp.codigo != 200){
+    console.log("suc false");
+    }
+  })
 }
 
 

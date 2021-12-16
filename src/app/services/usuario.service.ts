@@ -86,6 +86,7 @@ export class UsuarioService {
   }
 
   buscarPrestador(){
+    
     return this.http.get(`${ base_url }/buscarprestador` )
 
   }
@@ -128,8 +129,13 @@ export class UsuarioService {
     return this.http.post(`${ base_url }/sucursales`, data);
   }
 
-  BuscaPrestador(){
-    return this.http.get(`${ base_url }/prestador`);
+  BuscaSucursalesByPrestador(){
+    const pre_id= 1;
+    return this.http.get(`${ base_url }/sucursales/${pre_id}`);
+  }
+
+  buscarRegionbySucursal(suc_id){
+    return this.http.get(`${ base_url }/regionbysucursal/${suc_id}`);
   }
 
   BuscaRegionPrestador(pre_id){

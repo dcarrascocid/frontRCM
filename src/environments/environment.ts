@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  // base_url: 'http://localhost:3001/api'
-  base_url: 'http://5408-201-188-62-91.ngrok.io/api'
+  base_url: 'http://localhost:3001/api'
+  // base_url: 'http://5408-201-188-62-91.ngrok.io/api'
 };
 
 /*
