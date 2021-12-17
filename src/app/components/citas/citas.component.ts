@@ -560,6 +560,7 @@ confirmarPago(){
       console.log("data::pago", data);
       this.UsuarioService.confirmaPagoParticular(data).subscribe((resp:any)=>{
         if(resp.codigo ==200){
+          console.log("respusta pago", resp);
           this.modalService.dismissAll();
           this.router.navigate(['/reservas/confirmacion']);
           this.spinner.hide();

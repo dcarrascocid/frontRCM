@@ -41,7 +41,7 @@ export class CalendarioComponent implements OnInit {
         right:'dayGridMonth,timeGridWeek,timeGridDay'
       },
       editable:true,
-      defaultView:'timeGridWeek',
+      defaultView:'dayGridMonth',
       timeFormat: 'H(:mm)',
 
       eventClick:this.handleEventClick.bind(this),
