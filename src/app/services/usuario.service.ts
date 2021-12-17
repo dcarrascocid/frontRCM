@@ -115,6 +115,11 @@ export class UsuarioService {
       return this.http.get(`${ base_url }/especialidades`);
   }
 
+  
+  buscaEspecialidadesBySucursal(suc_id){
+        return this.http.get(`${ base_url }/especialidadesbysucursal/${suc_id}`);
+  }
+  
   buscaEspecialidadesPrestador(pre_id){
     const data ={
       pre_id:pre_id
@@ -215,6 +220,10 @@ export class UsuarioService {
    confirmarBono(data){
         return this.http.post(`${ base_url }/fon-confirmar-pago`, data); 
    }
+
+   confirmaPagoParticular(data){
+    return this.http.post(`${ base_url }/confirmar-pago-particular`, data); 
+}
 
    buscarCopiaBono(folio){
      const data ={

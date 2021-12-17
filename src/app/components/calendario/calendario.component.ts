@@ -87,9 +87,8 @@ export class CalendarioComponent implements OnInit {
         this.spinner.hide();
         if(this.citaReservada.agen_idagenda){
           Swal.fire({
-              title: this.citaReservada.fecha+' '+ this.citaReservada.agen_hora+' Dr:'+this.citaReservada.nombre_profesional+'('+this.citaReservada.especialidad+')', 
-              text: "¿Confirmar cita?",
-              icon: 'warning',
+              title:"¿Confirmar cita?",
+              text: 'PARA EL DÍA: '+ this.citaReservada.fecha+' A LAS : '+ this.citaReservada.agen_hora+'HRS CON EL  PROFESIONAL DR.:'+this.citaReservada.nombre_profesional+' PARA LA ESPECIALIDAD DE : '+this.citaReservada.especialidad, 
               showCancelButton: true,
               confirmButtonText: "Sí, Confirmar",
               cancelButtonText: "Cancelar",

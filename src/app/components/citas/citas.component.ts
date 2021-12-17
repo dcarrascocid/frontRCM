@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerService } from "ngx-spinner";
 import {Router} from '@angular/router';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-citas',
@@ -61,7 +62,7 @@ export class CitasComponent implements OnInit {
       });
 
       this.pacienteForm = this.formBuilder.group({
-        res_tipo_doc:null,
+        res_tipo_doc:1,
         res_numerodocumento:null,
         res_numdocdv:null,
         res_monbres:null,
@@ -110,7 +111,11 @@ export class CitasComponent implements OnInit {
 
   cambiaSucursal(suc_id){
     if(suc_id){
-      this.buscarRegionbySucursal(50);
+      this.sucursal=suc_id;
+      this.buscarRegionbySucursal(suc_id);
+      this.UsuarioService.buscaEspecialidadesBySucursal(suc_id).subscribe((resp:any)=>{
+        this.especialidades=resp.data;
+      });
     }
     if(!suc_id){}
   }
@@ -234,6 +239,7 @@ BuscaRegionPrestador(pre_id){
 }
 
 buscarRegionbySucursal(suc_id){
+  //check OK
   this.UsuarioService.buscarRegionbySucursal(suc_id).subscribe((resp:any)=>{
     if(resp.codigo == 200){
       this.regiones= resp.data;
@@ -307,8 +313,8 @@ if(pres_id){
 
 buscarCita(){
   this.spinner.show();
-
-  if(!this.prestador || !this.prestacion || !this.especialidad ){
+console.log("prestador::.",this.prestador, "presta:::",this.prestacion ,"espe",this.especialidad);
+  if(!this.prestador && !this.prestacion && !this.especialidad ){
     Swal.fire({
       title: 'Error!',
       text: 'Faltan datos para la busqueda',
@@ -514,7 +520,7 @@ buscarBeneficiario(content, content1){
 confirmarPago(){
   this.spinner.show();
   this.citasReservadas;
-  if(this.citasReservadas){
+  if(this.citasReservadas.nivel != 'PARTICULAR'){
       this.UsuarioService.confirmarBono(this.citasReservadas).subscribe((resp:any)=>{
       if(resp.codigo == 200){
           this.citasReservadas.bono =resp.data;
@@ -543,14 +549,45 @@ confirmarPago(){
       }
   })
   }
+  if(this.citasReservadas.nivel == 'PARTICULAR'){
+      const data ={
+        agen_idagenda:this.citasReservadas.agen_idagenda,
+        run:this.citasReservadas.rut_beneficiario,
+        montoPagado:this.citasReservadas.valortotal,
+        pag_nivel:this.citasReservadas.nivel,
+        suc_id:this.sucursal
+      }
+      console.log("data::pago", data);
+      this.UsuarioService.confirmaPagoParticular(data).subscribe((resp:any)=>{
+        if(resp.codigo ==200){
+          this.modalService.dismissAll();
+          this.router.navigate(['/reservas/confirmacion']);
+          this.spinner.hide();
+
+        }
+        if(resp.codigo != 200){
+          this.spinner.hide();
+          Swal.fire({
+            title: 'Error!',
+            text: 'No se pudo realizar el pago!!',
+            icon: 'error',
+            confirmButtonText: 'Cerrar'
+          });  
+        }
+      })
+  }
 }
 
 guradaDatosPaciente(content){
+  console.log("SUCURSAL:::::::::", this.sucursal);
+  console.log("cITAS ::::", this.citasReservadas);
   this.spinner.show();
             const data = {
+            suc_id :this.sucursal,
+            codigo:this.citasReservadas.codigo,
             res_tipo_doc:this.pacienteForm.value.res_tipo_doc, 
             res_numerodocumento:this.pacienteForm.value.res_numerodocumento,
-            res_num_docdv:this.pacienteForm.value.res_num_docdv, 
+            res_num_docdv:this.pacienteForm.value.res_numdocdv, 
             nombres:this.pacienteForm.value.res_nombres,
             paterno:this.pacienteForm.value.res_paterno,
             materno:this.pacienteForm.value.res_materno,
@@ -558,14 +595,22 @@ guradaDatosPaciente(content){
             res_telefono:this.pacienteForm.value.res_telefono
             }
   this.UsuarioService.guardarPacienteParticuluar(data).subscribe((resp:any)=>{
-    if(resp.data.codigo ==200){
-      this.citasReservadas.beneficiario = this.pacienteForm.value.res_nombres,' ',this.pacienteForm.value.res_paterno,' ',this.pacienteForm.value.res_materno;
-      this.citasReservadas.run = this.pacienteForm.value.res_numerodocumento, '-',this.pacienteForm.value.res_numdocdv;
-      this.citasReservadas.tramo = 'PARTICULAR'
+    console.log("respuesta::::", resp);
+    if(resp.codigo ==200){
+      this.citasReservadas.beneficiario = resp.residente.res_nombres,' ',resp.residente.res_apellidopaterno,' ',resp.residente.res_apellidomaterno;
+      this.citasReservadas.rut_beneficiario =resp.residente.res_numerodocumento; 
+      this.citasReservadas.run =resp.residente.res_numerodocumento, '-',resp.residente.res_num_docdv;
+      this.citasReservadas.nivel = resp.residente.res_categoria;
+      this.citasReservadas.valortotal=resp.prestacion.vp_precio;
+      this.citasReservadas.copago=resp.prestacion.vp_precio;
+      this.citasReservadas.bonificacion=0;
+
       this.spinner.hide();
       this.modalService.open(content, { size: 'lg' });
     }
-
+    if(resp.codigo !=200){
+console.log("entro aca en la mala");
+    }
   });
 }
 
