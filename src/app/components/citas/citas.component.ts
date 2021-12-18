@@ -43,7 +43,9 @@ export class CitasComponent implements OnInit {
   public prestacionFonasa;
   public codigoFonosa;
   public citasReservadas:any;
-  public calendar:boolean=false;
+  public calendar:boolean=true;
+  public imagen:boolean=true;
+  public laboratorio:boolean =false;
 
 
   constructor(
@@ -80,8 +82,6 @@ export class CitasComponent implements OnInit {
     this.spinner.show();
     this.obetnerToken();
     this.BuscaSucursalesByPrestador();
-    // this.fechas();
-    this.buscaPrestacion();
     this.buscarPrestacinesFonasa();
     this.updateEvents();
     this.spinner.hide();
@@ -113,6 +113,7 @@ export class CitasComponent implements OnInit {
     if(suc_id){
       this.sucursal=suc_id;
       this.buscarRegionbySucursal(suc_id);
+      this.buscaPrestacion(suc_id);
       this.UsuarioService.buscaEspecialidadesBySucursal(suc_id).subscribe((resp:any)=>{
         this.especialidades=resp.data;
       });
@@ -295,18 +296,61 @@ BuscaCitasDisponibles(pro_idprofesional){
 }
 
 
-buscaPrestacion(){
-  
-  this.UsuarioService.buscaPrestacionAll().subscribe((resp:any)=>{
-    this.prestaciones= resp.data;
+buscaPrestacion(suc_id){
 
-
-  });
+  if(suc_id != 0){
+          this.UsuarioService.prestacionesbysucursal(suc_id).subscribe((resp:any)=>{
+            if(resp.codigo ==200){
+              this.prestaciones= resp.data;
+              }
+            if(resp.codigo != 200){
+              this.prestaciones=null;
+              Swal.fire({
+                title: 'Error!',
+                text: resp.mensaje,
+                icon: 'error',
+                confirmButtonText: 'Cerrar'
+              });
+            } 
+          });
+  }
 }
 
 cambiaPrestacion(pres_id){
-if(pres_id){
+  if(pres_id){
+  const data ={
+    pres_id:pres_id,
+    suc_id:this.prestacion
+  };
+  // console.log("pres_id", pres_id, this.sucursal);
+  this.UsuarioService.DisparaPrestacion.emit(data);
   this.prestacion=pres_id
+ console.log(pres_id);
+ switch (Number(pres_id)) {
+  case 1:
+    this.calendar=false;
+    this.imagen=true;
+    this.laboratorio=true;
+  break;
+  case 2:
+    this.calendar=false;
+    this.imagen=true;
+    this.laboratorio=true;
+  break;
+  case 3:
+    this.calendar=true;
+    this.imagen=false;
+    this.laboratorio=true;
+  
+  break;
+  case 4:
+    this.calendar=true;
+    this.imagen=true;
+    this.laboratorio=false;
+  break;
+
+}
+
 }
 
 }

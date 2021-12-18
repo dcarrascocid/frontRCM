@@ -1,0 +1,40 @@
+<!-- <ngx-spinner></ngx-spinner> -->
+
+<div class="card text-center">
+    <div class="row">
+      <label class="col-form-label" >Area de exámenes</label>
+      <div class="mb-3 row">
+        <label for="inputPassword" class="col-sm-2 col-form-label">Tipo Exámen</label>
+        <div class="col-sm-6">
+          <select name="prestaciones"  class="form-select" (change)="cambiaEspecialidad($event.target.value)">
+            <option selected >Seleccione Especialidad</option>
+            <option [value]="" *ngFor="let item of prestaciones">tester</option>
+        </select>
+        </div>
+        <div class="col-sm-4">
+          <button class="btn btn-primary position-relative"  type="submit">Agregar</button>
+        </div>
+      </div>
+  
+    <div class="mb-4">
+      <table class="table caption-top">
+        <thead>
+          <tr>
+            <th scope="col">EXÁMEN</th>
+            <th scope="col">CODIGO FONASA</th>
+            <th scope="col">SELECCIÓN</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+        </tbody>
+      </table>
+
+    </div>
+    
+    
+    </div>
+</div>

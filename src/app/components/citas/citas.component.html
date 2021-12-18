@@ -9,7 +9,7 @@
                         </div>
                         <div class="card-body">
                             <select name="prestadores"  class="form-select" (change)="cambiaSucursal($event.target.value)">
-                                <option selected >Seleccione prestador</option>
+                                <option [value]="0" selected >Seleccione prestador</option>
                                 <option [value]="item.suc_id" *ngFor="let item of prestadores">{{ item.suc_nombre}}</option>
                             </select>
                             <div class="form-check form-check-inline" (change)="cambiaVer($event.target.value)">
@@ -133,11 +133,23 @@
         </div>
         <div class="col-sm-8">
             <div class="card">
-                <div class="card-header">
-                   Calendario de Citas
-                </div>
                 <div class="card-body" [hidden]="calendar">
+                    <div class="card-header">
+                        Calendario de Citas
+                     </div>
                     <app-calendario ></app-calendario>   
+                </div>
+                <div class="card-body" [hidden]="imagen">
+                    <div class="card-header">
+                        Imagen
+                     </div>
+                     <app-imagen></app-imagen>
+                </div>
+                <div class="card-body" [hidden]="laboratorio">
+                    <div class="card-header">
+                        Laboratorio Clínico
+                     </div>
+                 <app-laboratorio></app-laboratorio>
                 </div>
             </div>
         </div>

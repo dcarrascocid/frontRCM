@@ -10,14 +10,17 @@ import { FullCalendarModule } from 'primeng/fullcalendar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModal, ModalDismissReasons, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from "ngx-spinner";
-
+import { ImagenComponent } from './imagen/imagen.component';
+import { LaboratorioComponent } from './laboratorio/laboratorio.component';
 
 @NgModule({
   declarations: [
     CitasComponent,
     ConfirmacionCitaComponent,
     TablaResultadosComponent,
-    CalendarioComponent
+    CalendarioComponent,
+    ImagenComponent,
+    LaboratorioComponent
     
 
   ],
@@ -26,6 +29,8 @@ import { NgxSpinnerModule } from "ngx-spinner";
     ConfirmacionCitaComponent,
     TablaResultadosComponent,
     CalendarioComponent,
+    ImagenComponent,
+    LaboratorioComponent
     
   ],
   imports: [
