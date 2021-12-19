@@ -241,6 +241,9 @@ export class UsuarioService {
     return this.http.post(`${ base_url }/pacienteparticular`, data); 
    }
 
+   prestacionByGrupo(data){
+    return this.http.post(`${ base_url }/prestacionbygrupo`, data); 
+   }
    
 
 

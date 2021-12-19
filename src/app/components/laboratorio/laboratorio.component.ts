@@ -8,15 +8,45 @@ import { UsuarioService } from '../../services/usuario.service';
   styleUrls: ['./laboratorio.component.css']
 })
 export class LaboratorioComponent implements OnInit {
-
+  public prestaciones; 
+  public prestacion;
+  public prestacionSeleccionada=[];
   constructor(
     public UsuarioService:UsuarioService
   ) { }
 
   ngOnInit() {
-  this.UsuarioService.DisparaPrestacion.subscribe((resp:any)=>{
-    console.log("respuesta disparador", resp);
-  })
+    this.UsuarioService.DisparaPrestacion.subscribe((resp:any)=>{
+      console.log("respuesta disparador", resp);
+      this.buscarPrestaciones(resp);
+    });
+  }
+
+  buscarPrestaciones(datos){
+
+
+    this.UsuarioService.prestacionByGrupo(datos).subscribe((resp:any)=>{
+        if(resp.codigo ==200){
+          this.prestaciones= resp.data;
+          console.log("prestaciones", this.prestaciones);
+
+        }
+        if(resp.codigo !=200){
+
+        }
+    });
+  }
+
+  cambiaPrestacion(pres_id){
+    this.prestacion = this.prestaciones.find(pr => pr.id == pres_id)
+
+  }
+
+  agregarPrestacion(){
+    if(this.prestacion){
+      this.prestacionSeleccionada.push(this.prestacion)
+
+    }
   }
 
   

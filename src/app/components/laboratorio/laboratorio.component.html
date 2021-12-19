@@ -4,20 +4,20 @@
     <div class="row">
       <label class="col-form-label" >Area de exámenes</label>
       <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label">Tipo Exámen</label>
+        <label class="col-sm-2 col-form-label">Tipo Exámen</label>
         <div class="col-sm-6">
-          <select name="prestaciones"  class="form-select" (change)="cambiaEspecialidad($event.target.value)">
-            <option selected >Seleccione Especialidad</option>
-            <option [value]="" *ngFor="let item of prestaciones">tester</option>
+          <select name="prestaciones"  class="form-select" (change)="cambiaPrestacion($event.target.value)">
+            <option selected >Seleccione prestación</option>
+            <option [value]="item.id"  *ngFor="let item of prestaciones">{{item.prestacion}}-({{ item.codigo }})</option>
         </select>
         </div>
         <div class="col-sm-4">
-          <button class="btn btn-primary position-relative"  type="submit">Agregar</button>
+          <button class="btn btn-primary position-relative"  type="button" (click)="agregarPrestacion()">Agregar</button>
         </div>
       </div>
   
     <div class="mb-4">
-      <table class="table caption-top">
+      <table class="table table-striped table table-sm"  style="text-align: left;">
         <thead>
           <tr>
             <th scope="col">EXÁMEN</th>
@@ -25,13 +25,19 @@
             <th scope="col">SELECCIÓN</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
+        <tbody >
+          <tr [prestacionSeleccionada]="prestacionSeleccionada" *ngFor="let prestacionSeleccionada of prestacionSeleccionada" >
+            <th>{{ prestacionSeleccionada.prestacion}}</th>
+            <td>{{ prestacionSeleccionada.codigo }}</td>
+            <td> <input class="form-check-input" type="checkbox" value="" id="{{ prestacionSeleccionada.id }}"></td>
         </tbody>
       </table>
+
+      <div class="mb-3 row">
+        <label class="col-sm-3 col-form-label">Cantidad:</label><label class="col-sm-6 col-form-label">{{prestacionSeleccionada.length}} EXAMENES SELECCIONADOS </label>
+
+      </div>
+  
 
     </div>
     
