@@ -3,105 +3,106 @@
 <div class="card text-center">
     <div class="row">
         <div class="col-sm-4">
-            <div class="card">
-                <div class="card-header">
-                    Prestador
-                </div>
-                <div class="card-body">
-                    <select name="prestadores" class="form-select" (change)="cambiaSucursal($event.target.value)">
+
+            <div class="card-header bg-light">
+                1. PRESTADOR
+            </div>
+            <div class="card-body">
+                <select name="prestadores" class="form-select" (change)="cambiaSucursal($event.target.value)">
                                 <option selected >Seleccione prestador</option>
                                 <option [value]="item.suc_id" *ngFor="let item of prestadores">{{ item.suc_nombre}}</option>
                             </select>
-                    <div class="form-check form-check-inline" (change)="cambiaVer($event.target.value)">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="rdDia" value="1" checked>
-                        <label class="form-check-label" for="rdDia">Ver día</label>
-                    </div>
-
-                    <div class="form-check form-check-inline" (change)="cambiaVer($event.target.value)">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="rdSemana" value="2">
-                        <label class="form-check-label" for="rdSemana">Ver Semana</label>
-                    </div>
-
-                    <div class="form-control btn-group">
-
-                        <label for="fechaDesde">Inicio</label>
-                        <input type="date" (change)="cambiaFecha($event.target)" [formControl]="fecha1">
-                        <label for="fechaDesde">Termino</label>
-                        <input type="date" (change)="cambiaFecha($event.target)" [formControl]="fecha2">
-
-                    </div>
-                    <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+                <div class="form-check form-check-inline" (change)="cambiaVer($event.target.value)">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="rdDia" value="1" checked>
+                    <label class="form-check-label" for="rdDia">Ver día</label>
                 </div>
+
+                <div class="form-check form-check-inline" (change)="cambiaVer($event.target.value)">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="rdSemana" value="2">
+                    <label class="form-check-label" for="rdSemana">Ver Semana</label>
+                </div>
+
+                <div class="form-control btn-group">
+
+                    <label for="fechaDesde">Inicio</label>
+                    <input type="date" (change)="cambiaFecha($event.target)" [formControl]="fecha1">
+                    <label for="fechaDesde">Termino</label>
+                    <input type="date" (change)="cambiaFecha($event.target)" [formControl]="fecha2">
+
+                </div>
+                <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
             </div>
+
         </div>
+
         <div class="col-sm-4">
-            <div class="card">
-                <div class="card-header">
-                    Identificación Paciente
-                </div>
-                <div class="card-body">
-                    <form [formGroup]="consultaForm" (ngSubmit)="buscarBeneficiario(content, content1)">
-                        <div class="d-flex justify-content-center bd-highlight mb-2">
-                            <div class="p-2 bd-highlight">
-                                <div class="btn-group">
-
-                                    <input type="radio" class="btn-check" formControlName="tipoDoc" value="1" autocomplete="off" checked>
-                                    <label class="btn btn-outline-primary btn-block">RUT</label>
-                                    <input type="radio" class="btn-check" formControlName="tipoDoc" value="2" autocomplete="off">
-                                    <label class="btn btn-outline-danger btn-block">OTRO DOCUMENTO</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <input class="form-control" type="text" formControlName="rut" (change)="validarRut()" placeholder="ingrese numero de documento" />
-                            <div *ngIf="revItemForm.rut.errors">
-                                <span *ngIf="revItemForm.rut.errors.invalido">Rut no valido</span>
-                            </div>
-                            <div class="d-grid gap-2 col-6 mx-auto">
-                                <button class="btn btn-primary position-relative" [disabled]="!botonEnviar" type="submit">Enviar</button>
-                                <!-- <input class="form-control" type="text"  [(ngModel)]="consultaForm.rut.val"  (change)="validarRut()" maxlength="12" [required]="true" (keyup.enter)="buscarBeneficiario(buscarPac.value)" #buscarPac placeholder="ingrese numero de documento"/> -->
-                                <!-- <button class="btn btn-outline-primary" type="button" (click)="buscarBeneficiario(buscarPac.value)">Enviar</button> -->
-
-                            </div>
-                        </div>
-                    </form>
-                    <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
-                </div>
+            <div class="card-header ">
+                3. PROFESIONAL
             </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="card">
-                <div class="card-header">
-                    Profesional
-                </div>
-                <div class="card-body">
-                    <select name="profesionales" class="form-select" (change)="cambiaProfesional($event.target.value)">
+            <div class="card-body">
+                <select name="profesionales" class="form-select" (change)="cambiaProfesional($event.target.value)">
                             <option selected >Seleccione Profesional</option>
                             <option [value]="item.pro_idprofesional" *ngFor="let item of profesionales">{{ item.nombre_profesional}}</option>
                         </select>
-                    <div class="d-grid gap-1 col-6 mx-auto">
-                        <button class="btn btn-primary" (click)=buscarCita() type="submit">Buscar Cita</button>
-                    </div>
+            </div>
 
-
-                </div>
+            <div class="d-grid gap-2 col-3 mx-auto mt-5">
+                <button class="btn btn-primary" (click)=buscarCita() type="submit">Buscar Cita</button>
             </div>
         </div>
+
         <div class="col-sm-4">
-            <div class="card">
-                <div class="card-header">
-                    Parametros de Busqueda
-                </div>
-                <div class="card-body">
-                    <div class="border mb-4">
-                        <label class="col-form-label col-3 col-md-4" for="">Prestacion</label>
-                        <div class="form-check" name="prestaciones" *ngFor="let item of prestaciones" (change)="cambiaPrestacion($event.target.id)">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="{{ item.id }}">
-                            <label class="form-check-label" for="flexRadioDefault1">
-                                 {{ item.nombre}}
-                                </label>
+
+            <div class="card-header">
+                4. IDENTIFICACION DEL PACIENTE
+            </div>
+            <div class="card-body">
+                <form [formGroup]="consultaForm" (ngSubmit)="buscarBeneficiario(content, content1)">
+                    <div class="d-flex justify-content-center bd-highlight mb-2">
+
+                        <div class="btn-group">
+
+                            <input type="radio" class="btn-check" formControlName="tipoDoc" value="1" autocomplete="off" checked>
+                            <label class="btn btn-outline-primary btn-block">RUT</label>
+                            <input type="radio" class="btn-check" formControlName="tipoDoc" value="2" autocomplete="off">
+                            <label class="btn btn-outline-primary btn-block">OTRO DOCUMENTO</label>
                         </div>
 
+                    </div>
+                    <div>
+                        <input class="form-control" type="text" formControlName="rut" (change)="validarRut()" placeholder="Ingrese numero de documento" />
+                        <div *ngIf="revItemForm.rut.errors">
+                            <span *ngIf="revItemForm.rut.errors.invalido">Rut no valido</span>
+                        </div>
+                        <div class="d-grid gap-2 col-3 mx-auto mt-3">
+                            <button class="btn btn-primary position-relative" [disabled]="!botonEnviar" type="submit">Enviar</button>
+                            <!-- <input class="form-control" type="text"  [(ngModel)]="consultaForm.rut.val"  (change)="validarRut()" maxlength="12" [required]="true" (keyup.enter)="buscarBeneficiario(buscarPac.value)" #buscarPac placeholder="ingrese numero de documento"/> -->
+                            <!-- <button class="btn btn-outline-primary" type="button" (click)="buscarBeneficiario(buscarPac.value)">Enviar</button> -->
+
+                        </div>
+                    </div>
+                </form>
+                <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+            </div>
+
+        </div>
+
+        <div class="col-sm-4 mt-2">
+            <div class="card">
+                <div class="card-header ">
+                    2. PARAMETROS DE BUSQUEDA
+                </div>
+                <div class="card-body">
+                    <div class="border mb-4 md-right">
+                        <label class="col-form-label col-3 col-md-4" for="">Prestacion</label>
+                        <div class="card">
+                            <div class="form-check text-left" name="prestaciones" *ngFor="let item of prestaciones" (change)="cambiaPrestacion($event.target.id)">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="{{ item.id }}">
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                 {{ item.nombre}}
+                                </label>
+                            </div>
+                        </div>
                     </div>
                     <div class="border mb-4">
                         <label class="col-form-label col-3 col-md-4" for="cboEspe">Especialidad</label>
@@ -131,7 +132,8 @@
             </div>
 
         </div>
-        <div class="col-sm-8">
+
+        <div class="col-sm-8 mt-2">
             <div class="card">
                 <div class="card-header">
                     Calendario de Citas
