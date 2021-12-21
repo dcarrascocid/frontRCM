@@ -235,7 +235,7 @@
     </div>
     <div class="modal-body">
         
-            <form [formGroup]="pacienteForm" (ngSubmit)="guradaDatosPaciente(content)">
+            <form [formGroup]="pacienteForm" (ngSubmit)="guradaDatosPaciente(content, content2)">
                 <div class="row">
                     <div class="btn-group">
                         <input type="radio" class="btn-check" formControlName="res_tipo_doc"  value="1"  autocomplete="off" checked>
@@ -245,7 +245,7 @@
                     </div>
                     <div class="form-group col-md-3">
                         <label class="form-label" for="txtRut">Rut</label>
-                        <input type="text" class="form-control"  formControlName="res_numerodocumento" value="{{citasReservadas.run}}"  >
+                        <input type="text" class="form-control"  formControlName="res_numerodocumento" value=""  >
                     </div>
                     <div class="form-group col-md-3">
                         <label class="form-label"  for="txtPaciente">digito verificador</label>
@@ -253,18 +253,18 @@
                     </div>
                     <div class="form-group col-md-3">
                         <label class="form-label"  for="txtPaciente">Apellido Paterno</label>
-                        <input type="text" class="form-control"  formControlName="res_paterno" value="{{citasReservadas.run}}"  >
+                        <input type="text" class="form-control"  formControlName="res_paterno" value=""  >
                     </div>
                     <div class="form-group col-md-3">
                         <label class="form-label"  for="txtPaciente">Apellido Materno</label>
-                        <input type="text" class="form-control"  formControlName="res_materno" value="{{citasReservadas.apellidos }}"  >
+                        <input type="text" class="form-control"  formControlName="res_materno" value=""  >
                     </div>
 
                 </div>
                 <div  class="row">
                     <div class="form-group col-md-3">
                         <label class="form-label"  for="txtPaciente">Nombres</label>
-                        <input type="text" class="form-control"  formControlName="res_nombres" value="{{citasReservadas.nombres}}"  >
+                        <input type="text" class="form-control"  formControlName="res_nombres" value=""  >
                     </div>
                     <div class="form-group col-md-3">
                         <label class="form-label" for="txtRut">telefono</label>

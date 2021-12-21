@@ -21,6 +21,8 @@ export class UsuarioService {
   @Output() DisparadorCitasReservada: EventEmitter<any> = new EventEmitter(); 
   @Output() ReservaCitas: EventEmitter<any> = new EventEmitter(); 
   @Output() DisparaPrestacion : EventEmitter<any> = new EventEmitter(); 
+  @Output() DisparadorVista : EventEmitter<any> = new EventEmitter(); 
+
   public auth2: any;
 
   constructor( private http: HttpClient, 

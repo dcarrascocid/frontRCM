@@ -8,6 +8,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerService } from "ngx-spinner";
 import {Router} from '@angular/router';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { right } from '@popperjs/core';
 
 @Component({
   selector: 'app-citas',
@@ -68,7 +69,7 @@ export class CitasComponent implements OnInit {
         res_tipo_doc:1,
         res_numerodocumento:null,
         res_numdocdv:null,
-        res_monbres:null,
+        res_nombres:null,
         res_paterno:null,
         res_materno:null,
         res_correo:null,
@@ -427,20 +428,25 @@ cambiaFecha(datos){
 }
 
 cambiaVer(data){
-  if(data==2){
 
+  if(data==2){
+    const right = 'timeGridWeek';
+    this.UsuarioService.DisparadorVista.emit({data: right});
+    
     this.fecha.setDate(this.fecha.getDate() - this.fecha.getDay());
     const first = new Date(this.fecha);
     const  last = new Date(this.fecha);
     last.setDate(last.getDate()+6);
 
-    console.log("fecha1 ",first);
-    console.log("fecha1 ",last);
+    // this.fecha1 = new FormControl(first, []); 
+    // this.fecha2 = new FormControl(last, []); 
 
-}
-if(data ==1){
-  console.log("ver semana");
-}
+  }
+  if(data ==1){
+    const right = 'timeGridDay';
+    this.UsuarioService.DisparadorVista.emit({data: right});
+
+  }
 }
 
 // reservaCitaTemporal(datos){
@@ -534,7 +540,7 @@ buscarBeneficiario(content, content1, content2){
                   });
 
         }
-        if(resp.codigo != 200 ){//no es fonasa
+        if(resp.codigo == 202 ){//no es fonasa
           this.citasReservadas.beneficiario=resp.data; 
           this.citasReservadas.suc_id = this.sucursal;
           console.log("LO QUE MANDO", this.citasReservadas);  
@@ -561,7 +567,16 @@ buscarBeneficiario(content, content1, content2){
           // });
           this.modalService.open(content2, { size: 'lg' });
         } 
-        if(resp.codigo ==503){}      
+        if(resp.codigo == 201){
+          this.spinner.hide();
+          Swal.fire({
+            title: 'Error!',
+            text: resp.data.mensaje,
+            icon: 'error',
+            confirmButtonText: 'Cerrar'
+          });
+          this.modalService.open(content1, { size: 'lg' });
+        }      
 
     });
 
@@ -643,9 +658,8 @@ confirmarPago(){
 }
 
 
-guradaDatosPaciente(content){
-  console.log("SUCURSAL:::::::::", this.sucursal);
-  console.log("cITAS ::::", this.citasReservadas);
+guradaDatosPaciente(content, content2){
+console.log("thpaciente", this.pacienteForm);
   this.spinner.show();
             const data = {
             suc_id :this.sucursal,
@@ -657,8 +671,10 @@ guradaDatosPaciente(content){
             paterno:this.pacienteForm.value.res_paterno,
             materno:this.pacienteForm.value.res_materno,
             res_correo:this.pacienteForm.value.res_correo,
-            res_telefono:this.pacienteForm.value.res_telefono
+            res_telefono:this.pacienteForm.value.res_telefono,
+            prestaciones:this.citasReservadas.prestaciones
             }
+console.log("lo que mando pt para guardar", data);
   this.UsuarioService.guardarPacienteParticuluar(data).subscribe((resp:any)=>{
     console.log("respuesta::::", resp);
     if(resp.codigo ==200){
@@ -674,7 +690,19 @@ guradaDatosPaciente(content){
       this.modalService.open(content, { size: 'lg' });
     }
     if(resp.codigo !=200){
-console.log("entro aca en la mala");
+      console.log("RESPUESTA DISTINTA", resp);
+      console.log("entro aca en la mala");
+      this.citasReservadas.beneficiario = resp.residente.res_nombres,' ',resp.residente.res_apellidopaterno,' ',resp.residente.res_apellidomaterno;
+      this.citasReservadas.rut_beneficiario =resp.residente.res_numerodocumento; 
+      this.citasReservadas.run =resp.residente.res_numerodocumento, '-',resp.residente.res_num_docdv;
+      this.citasReservadas.nivel = resp.residente.res_categoria;
+      this.prestacionesValorizadas = resp.prestaciones;
+      this.prestacionesValorizadas.totalGeneral = resp.totalGeneral;
+      this.prestacionesValorizadas.totalBonificacion =resp.totalBonificacion;
+      this.prestacionesValorizadas.totalCopago = resp.totalCopago;
+      this.spinner.hide();
+      this.modalService.open(content2, { size: 'lg' });
+
     }
   });
 }

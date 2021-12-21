@@ -19,6 +19,7 @@ export class CalendarioComponent implements OnInit {
   public events:any[];
   public options:any;
   public citaReservada:any=null;
+  public vista ='timeGridDay';
   @Input() public calendario:any;
   constructor( 
     public UsuarioService :UsuarioService,
@@ -26,6 +27,10 @@ export class CalendarioComponent implements OnInit {
     ) { }
 
   ngOnInit() {
+    this.UsuarioService.DisparadorVista.subscribe( (resp:any) =>{
+      this.vista=resp.data;
+      console.log("vuisra:::", this.vista);
+    })
 
     this.options={
       businessHours: {
@@ -37,8 +42,10 @@ export class CalendarioComponent implements OnInit {
       locale:esLocale,
       header:{
         left:'prev,next',
-        center:'title',
-        right:'dayGridMonth,timeGridWeek,timeGridDay'
+        // center:'title',
+        // right:'dayGridMonth,timeGridWeek,timeGridDay'
+        right:this.vista,
+        
       },
       editable:true,
       defaultView:'dayGridMonth',
