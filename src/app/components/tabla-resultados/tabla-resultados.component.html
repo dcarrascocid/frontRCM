@@ -1,0 +1,18 @@
+
+
+<table  class="table table-striped">
+    <tr>
+      <th scope="row" *ngFor="let item of citas">{{ item.agen_dia }}</th>
+    </tr>
+  
+    <tr>
+  
+      <th  *ngFor="let item of citas">
+          <tr *ngFor="let it of item.data"><a href="">
+            {{ it.agen_hora }} - {{ it.agen_estado }} 
+          </a></tr>
+         
+     </th>
+  
+    </tr>
+  </table>
