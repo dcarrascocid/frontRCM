@@ -7,6 +7,8 @@ import esLocale from '@fullcalendar/core/locales/es';
 import { UsuarioService } from '../../services/usuario.service';
 import Swal from 'sweetalert2';
 import { NgxSpinnerService } from "ngx-spinner";
+import {startOfDay,endOfDay,subDays,addDays,endOfMonth,isSameDay,isSameMonth,addHours} from 'date-fns';
+import { right } from '@popperjs/core';
 
 
 @Component({
@@ -19,6 +21,7 @@ export class CalendarioComponent implements OnInit {
   public events:any[];
   public options:any;
   public citaReservada:any=null;
+  public vista ='timeGridDay,timeGridWeek';
   @Input() public calendario:any;
   constructor( 
     public UsuarioService :UsuarioService,
@@ -26,6 +29,10 @@ export class CalendarioComponent implements OnInit {
     ) { }
 
   ngOnInit() {
+    this.UsuarioService.DisparadorVista.subscribe( (resp:any) =>{
+      this.options.header.right =resp.data;
+      console.log("vuisra:::",  this.options.header.right);
+    })
 
     this.options={
       businessHours: {
@@ -37,13 +44,15 @@ export class CalendarioComponent implements OnInit {
       locale:esLocale,
       header:{
         left:'prev,next',
-        center:'title',
-        right:'dayGridMonth,timeGridWeek,timeGridDay'
+        // center:'title',
+        // right:'dayGridMonth,timeGridWeek,timeGridDay'
+        right:this.vista,
+        
       },
       editable:true,
       defaultView:'dayGridMonth',
       timeFormat: 'H(:mm)',
-
+      start: addHours(startOfDay(new Date()), 2),
       eventClick:this.handleEventClick.bind(this),
       // eventClick: function(info) {
       //   // alert('Event: ' + info.event.id);

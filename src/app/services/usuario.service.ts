@@ -20,6 +20,9 @@ export class UsuarioService {
   @Output() DisparadorReserva: EventEmitter<any> = new EventEmitter(); 
   @Output() DisparadorCitasReservada: EventEmitter<any> = new EventEmitter(); 
   @Output() ReservaCitas: EventEmitter<any> = new EventEmitter(); 
+  @Output() DisparaPrestacion : EventEmitter<any> = new EventEmitter(); 
+  @Output() DisparadorVista : EventEmitter<any> = new EventEmitter(); 
+
   public auth2: any;
 
   constructor( private http: HttpClient, 
@@ -182,6 +185,10 @@ export class UsuarioService {
     return this.http.get(`${ base_url }/prestaciones`); 
   }  
 
+  prestacionesbysucursal(suc_id){
+    return this.http.get(`${ base_url }/prestacionesbysucursal/${suc_id}` ); 
+  }
+
   buscaCitasDisponiblesProf(data){
     return this.http.post(`${ base_url }/buscacitasprofe`, data); 
   }  
@@ -216,6 +223,10 @@ export class UsuarioService {
     return this.http.post(`${ base_url }/fon-valorizar-encuentro`, form); 
    }
 
+   valorizaPrestaciones(data){
+    return this.http.post(`${ base_url }//fon-valorizar-prestaciones`, data);     
+   }
+
 
    confirmarBono(data){
         return this.http.post(`${ base_url }/fon-confirmar-pago`, data); 
@@ -236,6 +247,9 @@ export class UsuarioService {
     return this.http.post(`${ base_url }/pacienteparticular`, data); 
    }
 
+   prestacionByGrupo(data){
+    return this.http.post(`${ base_url }/prestacionbygrupo`, data); 
+   }
    
 
 

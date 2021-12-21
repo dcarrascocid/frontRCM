@@ -30,7 +30,7 @@
                     <input type="date" (change)="cambiaFecha($event.target)" [formControl]="fecha2">
 
                 </div>
-                <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+
             </div>
 
         </div>
@@ -57,7 +57,7 @@
                 4. IDENTIFICACION DEL PACIENTE
             </div>
             <div class="card-body">
-                <form [formGroup]="consultaForm" (ngSubmit)="buscarBeneficiario(content, content1)">
+                <form [formGroup]="consultaForm" (ngSubmit)="buscarBeneficiario(content, content1, content2)">
                     <div class="d-flex justify-content-center bd-highlight mb-2">
 
                         <div class="btn-group">
@@ -135,148 +135,264 @@
 
         <div class="col-sm-8 mt-2">
             <div class="card">
-                <div class="card-header">
-                    Calendario de Citas
-                </div>
                 <div class="card-body" [hidden]="calendar">
                     <app-calendario></app-calendario>
+                </div>
+                <div class="card-body" [hidden]="laboratorio">
+                 <app-laboratorio></app-laboratorio>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <ng-template #content let-modal>
     <div class="modal-header">
-        <h4 class="modal-title">PRE-AGENDAMIENTO</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <h4 class="modal-title">PRE-AGENDAMIENTO</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
     <div class="modal-body">
-        <form>
-            <div class="row">
-                <div class="form-group col-md-4">
-                    <label class="form-label" for="txtRut">Rut</label>
-                    <input type="text" class="form-control" id="txtRut" value="{{citasReservadas.run}}" disabled>
+            <form>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label class="form-label" for="txtRut">Rut</label>
+                        <input type="text" class="form-control" id="txtRut" value="{{citasReservadas.run}}" disabled>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-label"  for="txtPaciente">Paciente</label>
+                        <input type="text" class="form-control" id="txtPaciente" value="{{citasReservadas.beneficiario}}" disabled>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label  class="form-label"  for="txtNivel">Nivel</label>
+                        <input type="text" class="form-control" id="txtNivel" value="{{citasReservadas.nivel}} " disabled>
+                    </div>
                 </div>
-                <div class="form-group col-md-4">
-                    <label class="form-label" for="txtPaciente">Paciente</label>
-                    <input type="text" class="form-control" id="txtPaciente" value="{{citasReservadas.beneficiario}}" disabled>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label class="form-label"  for="txtPrfesional">Profesional</label>
+                        <input type="text" class="form-control" id="txtProfesional" value="{{citasReservadas.nombre_profesional}}" disabled>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-label"  for="slcPrestacion">Prestacion</label>
+                          <input type="text" class="form-control" id="txtCodPrestacion" value="{{ citasReservadas.nombre }}" disabled>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-label"  for="txtCodPrestacion">Código Prestación</label>
+                        <input type="text" class="form-control" id="txtCodPrestacion" value="{{ citasReservadas.codigo }}" disabled>
+                    </div>
                 </div>
-                <div class="form-group col-md-4">
-                    <label class="form-label" for="txtNivel">Nivel</label>
-                    <input type="text" class="form-control" id="txtNivel" value="{{citasReservadas.nivel}} " disabled>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label class="form-label"  for="txtValorT">Valor total</label>
+                        <input type="text" class="form-control" id="txtValorT" value="{{ citasReservadas.valortotal }}" disabled>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-label"  for="txtBonificacion">Bonificación</label>
+                        <input type="text" class="form-control" id="txtBonificacion" value="{{ citasReservadas.bonificacion }}"disabled>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-label"  for="txtValorC">Valor Copago</label>
+                        <input type="text" class="form-control" id="txtValorC" value="{{ citasReservadas.copago }}" disabled>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-md-4">
-                    <label class="form-label" for="txtPrfesional">Profesional</label>
-                    <input type="text" class="form-control" id="txtProfesional" value="{{citasReservadas.nombre_profesional}}" disabled>
+                <div class="row mb-4">
+                    <div class="form-group col-md-4">
+                        <label  class="form-label"  for="txtFecha">Fecha</label>
+                        <input type="text" class="form-control" id="txtFecha" value="{{ citasReservadas.fecha }}" disabled>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-label"  for="txtHora">Hora</label>
+                        <input type="text" class="form-control" id="txtHora" value="{{ citasReservadas.agen_hora }}" disabled>
+                    </div>
+                    <div class="form-group col-md-2"></div>
                 </div>
-                <div class="form-group col-md-4">
-                    <label class="form-label" for="slcPrestacion">Prestacion</label>
-                    <input type="text" class="form-control" id="txtCodPrestacion" value="{{ citasReservadas.nombre }}" disabled>
-                </div>
-                <div class="form-group col-md-4">
-                    <label class="form-label" for="txtCodPrestacion">Código Prestación</label>
-                    <input type="text" class="form-control" id="txtCodPrestacion" value="{{ citasReservadas.codigo }}" disabled>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-md-4">
-                    <label class="form-label" for="txtValorT">Valor total</label>
-                    <input type="text" class="form-control" id="txtValorT" value="{{ citasReservadas.valortotal }}" disabled>
-                </div>
-                <div class="form-group col-md-4">
-                    <label class="form-label" for="txtBonificacion">Bonificación</label>
-                    <input type="text" class="form-control" id="txtBonificacion" value="{{ citasReservadas.bonificacion }}" disabled>
-                </div>
-                <div class="form-group col-md-4">
-                    <label class="form-label" for="txtValorC">Valor Copago</label>
-                    <input type="text" class="form-control" id="txtValorC" value="{{ citasReservadas.copago }}" disabled>
-                </div>
-            </div>
-            <div class="row mb-4">
-                <div class="form-group col-md-4">
-                    <label class="form-label" for="txtFecha">Fecha</label>
-                    <input type="text" class="form-control" id="txtFecha" value="{{ citasReservadas.fecha }}" disabled>
-                </div>
-                <div class="form-group col-md-4">
-                    <label class="form-label" for="txtHora">Hora</label>
-                    <input type="text" class="form-control" id="txtHora" value="{{ citasReservadas.agen_hora }}" disabled>
-                </div>
-                <div class="form-group col-md-2"></div>
-            </div>
 
-            <div class="d-grid gap-2 d-md-flex justify-content-md">
-                <button (click)="confirmarPago()" class="btn btn-success">Comprar bono</button>
-                <button class="btn btn-secondary">Copago</button>
-                <button class="btn btn-danger">Volver</button>
-            </div>
-        </form>
-
+                <div class="d-grid gap-2 d-md-flex justify-content-md">
+                    <button (click)="confirmarPago()" class="btn btn-success">Comprar bono</button>
+                    <button class="btn btn-secondary">Copago</button>
+                    <button class="btn btn-danger">Volver</button>
+                </div>
+            </form>
+  
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cerrar</button>
+      <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cerrar</button>
     </div>
-</ng-template>
+  </ng-template>
 
-<ng-template #content1 let-modal>
+  <ng-template #content1 let-modal>
     <div class="modal-header">
-        <h4 class="modal-title">IDENTIFACACIÓN PACIENTE</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <h4 class="modal-title">IDENTIFACACIÓN PACIENTE</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
     <div class="modal-body">
+        
+            <form [formGroup]="pacienteForm" (ngSubmit)="guradaDatosPaciente(content, content2)">
+                <div class="row">
+                    <div class="btn-group">
+                        <input type="radio" class="btn-check" formControlName="res_tipo_doc"  value="1"  autocomplete="off" checked>
+                        <label  >RUT</label>
+                        <input type="radio" class="btn-check" formControlName="res_tipo_doc" value="2" autocomplete="off">
+                        <label >OTRO DOCUMENTO</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-label" for="txtRut">Rut</label>
+                        <input type="text" class="form-control"  formControlName="res_numerodocumento" value=""  >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-label"  for="txtPaciente">digito verificador</label>
+                        <input type="text" class="form-control"  formControlName="res_numdocdv" value="" >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-label"  for="txtPaciente">Apellido Paterno</label>
+                        <input type="text" class="form-control"  formControlName="res_paterno" value=""  >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-label"  for="txtPaciente">Apellido Materno</label>
+                        <input type="text" class="form-control"  formControlName="res_materno" value=""  >
+                    </div>
 
-        <form [formGroup]="pacienteForm" (ngSubmit)="guradaDatosPaciente(content)">
-            <div class="row">
-                <div class="btn-group">
-                    <input type="radio" class="btn-check" formControlName="res_tipo_doc" value="1" autocomplete="off" checked>
-                    <label>RUT</label>
-                    <input type="radio" class="btn-check" formControlName="res_tipo_doc" value="2" autocomplete="off">
-                    <label>OTRO DOCUMENTO</label>
                 </div>
-                <div class="form-group col-md-3">
-                    <label class="form-label" for="txtRut">Rut</label>
-                    <input type="text" class="form-control" formControlName="res_numerodocumento" value="">
+                <div  class="row">
+                    <div class="form-group col-md-3">
+                        <label class="form-label"  for="txtPaciente">Nombres</label>
+                        <input type="text" class="form-control"  formControlName="res_nombres" value=""  >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-label" for="txtRut">telefono</label>
+                        <input type="text" class="form-control"  formControlName="res_telefono" value="" >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label  class="form-label"  for="txtNivel">Correo Electronico</label>
+                        <input type="text" class="form-control" formControlName="res_correo" value="" >
+                    </div>
                 </div>
-                <div class="form-group col-md-3">
-                    <label class="form-label" for="txtPaciente">digito verificador</label>
-                    <input type="text" class="form-control" formControlName="res_numdocdv" value="">
+                <div class="d-grid gap-2 d-md-flex justify-content-md">
+                    <button type="submit" class="btn btn-success">Guardar Datos</button>
                 </div>
-                <div class="form-group col-md-3">
-                    <label class="form-label" for="txtPaciente">Apellido Paterno</label>
-                    <input type="text" class="form-control" formControlName="res_paterno" value="">
-                </div>
-                <div class="form-group col-md-3">
-                    <label class="form-label" for="txtPaciente">Apellido Materno</label>
-                    <input type="text" class="form-control" formControlName="res_materno" value="">
-                </div>
-
-            </div>
-            <div class="row">
-                <div class="form-group col-md-3">
-                    <label class="form-label" for="txtPaciente">Nombres</label>
-                    <input type="text" class="form-control" formControlName="res_nombres" value="">
-                </div>
-                <div class="form-group col-md-3">
-                    <label class="form-label" for="txtRut">telefono</label>
-                    <input type="text" class="form-control" formControlName="res_telefono" value="">
-                </div>
-                <div class="form-group col-md-3">
-                    <label class="form-label" for="txtNivel">Correo Electronico</label>
-                    <input type="text" class="form-control" formControlName="res_correo" value="">
-                </div>
-            </div>
-            <div class="d-grid gap-2 d-md-flex justify-content-md">
-                <button type="submit" class="btn btn-success">Guardar Datos</button>
-            </div>
-        </form>
-
+            </form>
+         
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cerrar</button>
+      <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cerrar</button>
     </div>
-</ng-template>
+  </ng-template>
+
+  <ng-template #content2 let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">PRE-AGENDAMIENTO</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+            <form>
+                <div class="row">
+                    <div class="form-group-sm col-md-4">
+                        <label class="form-label" for="txtRut">Rut</label>
+                        <input type="text" class="form-control" id="txtRut" value="{{citasReservadas.run}}" disabled>
+                    </div>
+                    <div class="form-group-sm col-md-4">
+                        <label class="form-label"  for="txtPaciente">Paciente</label>
+                        <input type="text" class="form-control" id="txtPaciente" value="{{citasReservadas.beneficiario}}" disabled>
+                    </div>
+                    <div class="form-group-sm col-md-4">
+                        <label  class="form-label"  for="txtNivel">Nivel</label>
+                        <input type="text" class="form-control" id="txtNivel" value="{{citasReservadas.nivel}} " disabled>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label  class="form-label"  for="txtFecha">Fecha</label>
+                        <input type="text" class="form-control" id="txtFecha" value="{{ citasReservadas.fecha }}" disabled>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="form-label"  for="txtHora">Hora</label>
+                        <input type="text" class="form-control" id="txtHora" value="{{ citasReservadas.agen_hora }}" disabled>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-label"  for="txtPrfesional">Rut Med. Solicitante</label>
+                        <input type="text" class="form-control" id="txtProfesional" value="" placeholder="Ingrese Rut Medico tratante">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-label"  for="slcPrestacion">Med. Solictante</label>
+                          <input type="text" class="form-control" id="txtCodPrestacion" value="" placeholder="Ingrese Nombres medico Tratante">
+                    </div>
+                    <div class="form-group col-md-2"></div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label  class="form-label"  for="txtFecha">Orden Médica</label>
+                        <input type="text" class="form-control" id="txtFecha" value="" placeholder="Ingrese Número de orden médica">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label  class="form-label"  for="txtFecha">Concentimiento Informado</label>
+                        <div class="form-group col-md-2"></div>
+                        <input class="form-check-input" type="checkbox" value="" id="">
+
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                              <th scope="col">Exámen</th>
+                              <th scope="col">Código Fonasa</th>
+                              <th scope="col">Valor Prestación</th>
+                              <th scope="col">Bonificación</th>
+                              <th scope="col">Copago</th>
+
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr [prestacionesValorizadas]="prestacionesValorizadas" *ngFor="let prestacionesValorizadas of prestacionesValorizadas" >
+                              <td>{{ prestacionesValorizadas.prestacion}}</td>
+                              <td>{{ prestacionesValorizadas.codigo}}</td>
+                              <td>{{ prestacionesValorizadas.valortotal}}</td>
+                              <td>{{ prestacionesValorizadas.bonificacion}}</td>
+                              <td>{{ prestacionesValorizadas.valortotal}}</td>
+                            </tr>
+                          </tbody>
+                        
+                    </table>
+
+                </div>
+                <div class="row">
+                    <div class="mb-3 row">
+                        <label for="inputPassword" class="col-sm-3 col-form-label">Valor Prestacion</label>
+                        <div class="col-sm-4">
+                          <input type="text" class="form-control" value="{{ prestacionesValorizadas.totalGeneral }}" disabled>
+                        </div>
+                      </div>
+                      <div class="mb-3 row">
+                        <label for="inputPassword" class="col-sm-3 col-form-label">Bonificación</label>
+                        <div class="col-sm-4">
+                          <input type="text" class="form-control" value="{{ prestacionesValorizadas.totalBonificacion }}" disabled>
+                        </div>
+                      </div>
+                      <div class="mb-3 row">
+                        <label for="inputPassword" class="col-sm-3 col-form-label">Copago</label>
+                        <div class="col-sm-4">
+                          <input type="text" class="form-control" value="{{ prestacionesValorizadas.totalCopago }}" disabled>
+                        </div>
+                      </div>
+
+                </div>
+     
+                <div class="d-grid gap-2 d-md-flex justify-content-md">
+                    <button (click)="confirmarPago()" class="btn btn-success">Comprar bono</button>
+                    <button class="btn btn-secondary">Copago</button>
+                    <button class="btn btn-danger">Volver</button>
+                </div>
+            </form>
+  
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cerrar</button>
+    </div>
+  </ng-template>

@@ -8,6 +8,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerService } from "ngx-spinner";
 import {Router} from '@angular/router';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { right } from '@popperjs/core';
 
 @Component({
   selector: 'app-citas',
@@ -43,7 +44,10 @@ export class CitasComponent implements OnInit {
   public prestacionFonasa;
   public codigoFonosa;
   public citasReservadas:any;
-  public calendar:boolean=false;
+  public calendar:boolean=true;
+  public imagen:boolean=true;
+  public laboratorio:boolean =false;
+  public prestacionesValorizadas;
 
 
   constructor(
@@ -65,7 +69,7 @@ export class CitasComponent implements OnInit {
         res_tipo_doc:1,
         res_numerodocumento:null,
         res_numdocdv:null,
-        res_monbres:null,
+        res_nombres:null,
         res_paterno:null,
         res_materno:null,
         res_correo:null,
@@ -80,8 +84,6 @@ export class CitasComponent implements OnInit {
     this.spinner.show();
     this.obetnerToken();
     this.BuscaSucursalesByPrestador();
-    // this.fechas();
-    this.buscaPrestacion();
     this.buscarPrestacinesFonasa();
     this.updateEvents();
     this.spinner.hide();
@@ -113,6 +115,7 @@ export class CitasComponent implements OnInit {
     if(suc_id){
       this.sucursal=suc_id;
       this.buscarRegionbySucursal(suc_id);
+      this.buscaPrestacion(suc_id);
       this.UsuarioService.buscaEspecialidadesBySucursal(suc_id).subscribe((resp:any)=>{
         this.especialidades=resp.data;
       });
@@ -295,18 +298,61 @@ BuscaCitasDisponibles(pro_idprofesional){
 }
 
 
-buscaPrestacion(){
-  
-  this.UsuarioService.buscaPrestacionAll().subscribe((resp:any)=>{
-    this.prestaciones= resp.data;
+buscaPrestacion(suc_id){
 
-
-  });
+  if(suc_id != 0){
+          this.UsuarioService.prestacionesbysucursal(suc_id).subscribe((resp:any)=>{
+            if(resp.codigo ==200){
+              this.prestaciones= resp.data;
+              }
+            if(resp.codigo != 200){
+              this.prestaciones=null;
+              Swal.fire({
+                title: 'Error!',
+                text: resp.mensaje,
+                icon: 'error',
+                confirmButtonText: 'Cerrar'
+              });
+            } 
+          });
+  }
 }
 
 cambiaPrestacion(pres_id){
-if(pres_id){
+  if(pres_id){
+  const data ={
+    pres_id:pres_id,
+    suc_id:this.prestacion
+  };
+  console.log("pres_id", pres_id, this.sucursal);
+  this.UsuarioService.DisparaPrestacion.emit(data);
   this.prestacion=pres_id
+ console.log(pres_id);
+ switch (Number(pres_id)) {
+  case 1:
+    this.calendar=false;
+    this.imagen=true;
+    this.laboratorio=true;
+  break;
+  case 2:
+    this.calendar=false;
+    this.imagen=true;
+    this.laboratorio=true;
+  break;
+  case 3:
+    this.calendar=true;
+    this.imagen=true;
+    this.laboratorio=false;
+  
+  break;
+  case 4:
+    this.calendar=true;
+    this.imagen=true;
+    this.laboratorio=false;
+  break;
+
+}
+
 }
 
 }
@@ -382,20 +428,25 @@ cambiaFecha(datos){
 }
 
 cambiaVer(data){
-  if(data==2){
 
+  if(data==2){
+    const right = 'timeGridWeek';
+    this.UsuarioService.DisparadorVista.emit({data: right});
+    
     this.fecha.setDate(this.fecha.getDate() - this.fecha.getDay());
     const first = new Date(this.fecha);
     const  last = new Date(this.fecha);
     last.setDate(last.getDate()+6);
 
-    console.log("fecha1 ",first);
-    console.log("fecha1 ",last);
+    // this.fecha1 = new FormControl(first, []); 
+    // this.fecha2 = new FormControl(last, []); 
 
-}
-if(data ==1){
-  console.log("ver semana");
-}
+  }
+  if(data ==1){
+    const right = 'timeGridDay';
+    this.UsuarioService.DisparadorVista.emit({data: right});
+
+  }
 }
 
 // reservaCitaTemporal(datos){
@@ -425,13 +476,14 @@ this.codigoFonosa=id;
 updateEvents() {
   this.UsuarioService.DisparadorCitasReservada.subscribe( (resp:any) =>{
     if(resp.data){
+      console.log("datya", resp);
         this.citasReservadas=resp.data;// this.events =data.data;
         this.botonEnviar = true;
     }
   });
 }
 
-buscarBeneficiario(content, content1){
+buscarBeneficiario(content, content1, content2){
   console.log("content", content);
   console.log("content2", content1);
   this.spinner.show();
@@ -468,8 +520,8 @@ buscarBeneficiario(content, content1){
           this.citasReservadas.run = resp.data.beneficiario.run;
           this.citasReservadas.tramo =resp.data.beneficiario.tramo;
                   this.UsuarioService.valorizarPrestacion(resp, this.citasReservadas.codigo).subscribe((ret:any)=>{
+                    console.log("retorna valorizacion", ret);
                    if(ret.codigo == 200){ 
-                    console.log("RET:::", ret);
                   this.citasReservadas.nivel = ret.data.bonoValorizado.nivel;
                   this.citasReservadas.valortotal = ret.data.bonoValorizado.prestacionesValorizadas[0].montoTotal;
                   this.citasReservadas.copago =ret.data.bonoValorizado.prestacionesValorizadas[0].montoCopago;
@@ -489,7 +541,24 @@ buscarBeneficiario(content, content1){
                   });
 
         }
-        if(resp.codigo != 200 ){//no es fonasa
+        if(resp.codigo == 202 ){//no es fonasa
+          this.citasReservadas.beneficiario=resp.data; 
+          this.citasReservadas.suc_id = this.sucursal;
+          console.log("LO QUE MANDO", this.citasReservadas);  
+          this.UsuarioService.valorizaPrestaciones(this.citasReservadas).subscribe((ret:any)=>{
+            this.citasReservadas.nombre_profesional = this.citasReservadas.prestaciones[0].grp_nombre;
+            this.citasReservadas.idEncuentroMedico=  0;
+            this.citasReservadas.beneficiario =  resp.data.nombres+' '+resp.data.apellidos;
+            this.citasReservadas.run =  resp.data.run;
+            this.citasReservadas.nivel = resp.data.tramo;
+            this.prestacionesValorizadas = ret.data.prestaciones;
+            this.prestacionesValorizadas.totalGeneral = ret.data.totalGeneral;
+            this.prestacionesValorizadas.totalBonificacion =ret.data.totalBonificacion;
+            this.prestacionesValorizadas.totalCopago = ret.data.totalCopago;
+            console.log("presta:::", this.prestacionesValorizadas);
+          });    
+
+
           this.spinner.hide();
           // Swal.fire({
           //   title: 'Error!',
@@ -497,8 +566,18 @@ buscarBeneficiario(content, content1){
           //   icon: 'error',
           //   confirmButtonText: 'Cerrar'
           // });
+          this.modalService.open(content2, { size: 'lg' });
+        } 
+        if(resp.codigo == 201){
+          this.spinner.hide();
+          Swal.fire({
+            title: 'Error!',
+            text: resp.data.mensaje,
+            icon: 'error',
+            confirmButtonText: 'Cerrar'
+          });
           this.modalService.open(content1, { size: 'lg' });
-        }       
+        }      
 
     });
 
@@ -579,9 +658,9 @@ confirmarPago(){
   }
 }
 
-guradaDatosPaciente(content){
-  console.log("SUCURSAL:::::::::", this.sucursal);
-  console.log("cITAS ::::", this.citasReservadas);
+
+guradaDatosPaciente(content, content2){
+console.log("thpaciente", this.pacienteForm);
   this.spinner.show();
             const data = {
             suc_id :this.sucursal,
@@ -593,8 +672,10 @@ guradaDatosPaciente(content){
             paterno:this.pacienteForm.value.res_paterno,
             materno:this.pacienteForm.value.res_materno,
             res_correo:this.pacienteForm.value.res_correo,
-            res_telefono:this.pacienteForm.value.res_telefono
+            res_telefono:this.pacienteForm.value.res_telefono,
+            prestaciones:this.citasReservadas.prestaciones
             }
+console.log("lo que mando pt para guardar", data);
   this.UsuarioService.guardarPacienteParticuluar(data).subscribe((resp:any)=>{
     console.log("respuesta::::", resp);
     if(resp.codigo ==200){
@@ -610,7 +691,19 @@ guradaDatosPaciente(content){
       this.modalService.open(content, { size: 'lg' });
     }
     if(resp.codigo !=200){
-console.log("entro aca en la mala");
+      console.log("RESPUESTA DISTINTA", resp);
+      console.log("entro aca en la mala");
+      this.citasReservadas.beneficiario = resp.residente.res_nombres+' '+ resp.residente.res_apellidopaterno+' '+resp.residente.res_apellidomaterno;
+      this.citasReservadas.rut_beneficiario =resp.residente.res_numerodocumento; 
+      this.citasReservadas.run =resp.residente.res_numerodocumento+'-'+resp.residente.res_num_docdv;
+      this.citasReservadas.nivel = resp.residente.res_categoria;
+      this.prestacionesValorizadas = resp.prestaciones;
+      this.prestacionesValorizadas.totalGeneral = resp.totalGeneral;
+      this.prestacionesValorizadas.totalBonificacion =resp.totalBonificacion;
+      this.prestacionesValorizadas.totalCopago = resp.totalCopago;
+      this.spinner.hide();
+      this.modalService.open(content2, { size: 'lg' });
+
     }
   });
 }
