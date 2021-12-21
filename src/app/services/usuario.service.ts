@@ -221,6 +221,10 @@ export class UsuarioService {
     return this.http.post(`${ base_url }/fon-valorizar-encuentro`, form); 
    }
 
+   valorizaPrestaciones(data){
+    return this.http.post(`${ base_url }//fon-valorizar-prestaciones`, data);     
+   }
+
 
    confirmarBono(data){
         return this.http.post(`${ base_url }/fon-confirmar-pago`, data); 

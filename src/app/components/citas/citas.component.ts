@@ -46,6 +46,7 @@ export class CitasComponent implements OnInit {
   public calendar:boolean=true;
   public imagen:boolean=true;
   public laboratorio:boolean =false;
+  public prestacionesValorizadas;
 
 
   constructor(
@@ -322,7 +323,7 @@ cambiaPrestacion(pres_id){
     pres_id:pres_id,
     suc_id:this.prestacion
   };
-  // console.log("pres_id", pres_id, this.sucursal);
+  console.log("pres_id", pres_id, this.sucursal);
   this.UsuarioService.DisparaPrestacion.emit(data);
   this.prestacion=pres_id
  console.log(pres_id);
@@ -339,8 +340,8 @@ cambiaPrestacion(pres_id){
   break;
   case 3:
     this.calendar=true;
-    this.imagen=false;
-    this.laboratorio=true;
+    this.imagen=true;
+    this.laboratorio=false;
   
   break;
   case 4:
@@ -469,13 +470,14 @@ this.codigoFonosa=id;
 updateEvents() {
   this.UsuarioService.DisparadorCitasReservada.subscribe( (resp:any) =>{
     if(resp.data){
+      console.log("datya", resp);
         this.citasReservadas=resp.data;// this.events =data.data;
         this.botonEnviar = true;
     }
   });
 }
 
-buscarBeneficiario(content, content1){
+buscarBeneficiario(content, content1, content2){
   console.log("content", content);
   console.log("content2", content1);
   this.spinner.show();
@@ -513,7 +515,6 @@ buscarBeneficiario(content, content1){
           this.citasReservadas.tramo =resp.data.beneficiario.tramo;
                   this.UsuarioService.valorizarPrestacion(resp, this.citasReservadas.codigo).subscribe((ret:any)=>{
                    if(ret.codigo == 200){ 
-                    console.log("RET:::", ret);
                   this.citasReservadas.nivel = ret.data.bonoValorizado.nivel;
                   this.citasReservadas.valortotal = ret.data.bonoValorizado.prestacionesValorizadas[0].montoTotal;
                   this.citasReservadas.copago =ret.data.bonoValorizado.prestacionesValorizadas[0].montoCopago;
@@ -534,6 +535,23 @@ buscarBeneficiario(content, content1){
 
         }
         if(resp.codigo != 200 ){//no es fonasa
+          this.citasReservadas.beneficiario=resp.data; 
+          this.citasReservadas.suc_id = this.sucursal;
+          console.log("LO QUE MANDO", this.citasReservadas);  
+          this.UsuarioService.valorizaPrestaciones(this.citasReservadas).subscribe((ret:any)=>{
+            this.citasReservadas.nombre_profesional = this.citasReservadas.prestaciones[0].grp_nombre;
+            this.citasReservadas.idEncuentroMedico=  0;
+            this.citasReservadas.beneficiario =  resp.data.nombres+' '+resp.data.apellidos;
+            this.citasReservadas.run =  resp.data.run;
+            this.citasReservadas.nivel = resp.data.tramo;
+            this.prestacionesValorizadas = ret.data.prestaciones;
+            this.prestacionesValorizadas.totalGeneral = ret.data.totalGeneral;
+            this.prestacionesValorizadas.totalBonificacion =ret.data.totalBonificacion;
+            this.prestacionesValorizadas.totalCopago = ret.data.totalCopago;
+            console.log("presta:::", this.prestacionesValorizadas);
+          });    
+
+
           this.spinner.hide();
           // Swal.fire({
           //   title: 'Error!',
@@ -541,8 +559,9 @@ buscarBeneficiario(content, content1){
           //   icon: 'error',
           //   confirmButtonText: 'Cerrar'
           // });
-          this.modalService.open(content1, { size: 'lg' });
-        }       
+          this.modalService.open(content2, { size: 'lg' });
+        } 
+        if(resp.codigo ==503){}      
 
     });
 
@@ -622,6 +641,7 @@ confirmarPago(){
       })
   }
 }
+
 
 guradaDatosPaciente(content){
   console.log("SUCURSAL:::::::::", this.sucursal);

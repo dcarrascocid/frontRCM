@@ -34,11 +34,14 @@
       </table>
 
       <div class="mb-3 row">
+          <div class="col-sm-8">
         <label class="col-sm-3 col-form-label">Cantidad:</label><label class="col-sm-6 col-form-label">{{prestacionSeleccionada.length}} EXAMENES SELECCIONADOS </label>
-
-      </div>
-  
-
+          </div>
+          <div class="col-sm-2">
+            <button class="btn btn-success"  type="button" (click)="enviarPrestaciones()">Guardar</button>
+          </div>  
+        </div>
+          
     </div>
     
     

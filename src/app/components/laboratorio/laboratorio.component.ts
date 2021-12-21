@@ -11,6 +11,7 @@ export class LaboratorioComponent implements OnInit {
   public prestaciones; 
   public prestacion;
   public prestacionSeleccionada=[];
+  public citaReservada:any=null;
   constructor(
     public UsuarioService:UsuarioService
   ) { }
@@ -49,6 +50,19 @@ export class LaboratorioComponent implements OnInit {
     }
   }
 
+  enviarPrestaciones(){
+    console.log("envio ", this.prestacionSeleccionada);
+    if(this.prestacionSeleccionada.length != 0){
+      const data={
+        prestaciones: this.prestacionSeleccionada,
+      }
+      this.UsuarioService.DisparadorCitasReservada.emit({ data:data });
+
+    }
+    if(this.prestacionSeleccionada.length == 0){
+      console.log("no envio nada");
+    }
+  }
   
 
 }
