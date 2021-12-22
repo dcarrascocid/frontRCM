@@ -212,7 +212,6 @@ export class UsuarioService {
   }
 
   valorizarPrestacion(data, prestacion){
-console.log("lo que va la servivcio", data);
     const form ={
       rut: data.data.beneficiario.run,
       idencuentro: data.idencuentro,
@@ -224,7 +223,7 @@ console.log("lo que va la servivcio", data);
    }
 
    valorizaPrestaciones(data){
-    return this.http.post(`${ base_url }//fon-valorizar-prestaciones`, data);     
+    return this.http.post(`${ base_url }/fon-valorizar-prestaciones`, data);     
    }
 
 

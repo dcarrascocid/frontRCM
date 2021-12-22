@@ -324,7 +324,6 @@ cambiaPrestacion(pres_id){
     pres_id:pres_id,
     suc_id:this.prestacion
   };
-  console.log("pres_id", pres_id, this.sucursal);
   this.UsuarioService.DisparaPrestacion.emit(data);
   this.prestacion=pres_id
  console.log(pres_id);
@@ -359,7 +358,6 @@ cambiaPrestacion(pres_id){
 
 buscarCita(){
   this.spinner.show();
-console.log("prestador::.",this.prestador, "presta:::",this.prestacion ,"espe",this.especialidad);
   if(!this.prestador && !this.prestacion && !this.especialidad ){
     Swal.fire({
       title: 'Error!',
@@ -476,7 +474,6 @@ this.codigoFonosa=id;
 updateEvents() {
   this.UsuarioService.DisparadorCitasReservada.subscribe( (resp:any) =>{
     if(resp.data){
-      console.log("datya", resp);
         this.citasReservadas=resp.data;// this.events =data.data;
         this.botonEnviar = true;
     }
@@ -512,40 +509,71 @@ buscarBeneficiario(content, content1, content2){
   }
 
   if(this.consultaForm.value.tipoDoc ==1){//es rut 
+    console.log("LO QUE TENGO", this.citasReservadas);
     this.UsuarioService.buscarbeneficiario(data).subscribe((resp:any)=>{
       console.log("BUSCA BENE::",resp);
-        if(resp.codigo == 200){ // es fonasa
-          this.citasReservadas.idEncuentroMedico= resp.idEncuentroMedico;
-          this.citasReservadas.idencuentro =resp.idencuentro;
-          this.citasReservadas.beneficiario = resp.data.beneficiario.nombres +' '+ resp.data.beneficiario.apellidos;
-          this.citasReservadas.rut = resp.data.beneficiario.run;
-          this.citasReservadas.tramo =resp.data.beneficiario.tramo;
-                  this.UsuarioService.valorizarPrestacion(resp, this.citasReservadas.codigo).subscribe((ret:any)=>{
-                    console.log("retorna valorizacion", ret);
-                   if(ret.codigo == 200){ 
-                  this.citasReservadas.nivel = ret.data.bonoValorizado.nivel;
-                  this.citasReservadas.valortotal = ret.data.bonoValorizado.prestacionesValorizadas[0].montoTotal;
-                  this.citasReservadas.copago =ret.data.bonoValorizado.prestacionesValorizadas[0].montoCopago;
-                  this.citasReservadas.bonificacion =  ret.data.bonoValorizado.prestacionesValorizadas[0].montoBonificado;
-                  this.spinner.hide();
-                  this.modalService.open(content, { size: 'lg' });
-                  }
-                  if(ret.codigo != 200){
-                    this.spinner.hide();
-                    Swal.fire({
-                      title: 'Error!',
-                      text: "No se pudop valorizar la prestación",
-                      icon: 'error',
-                      confirmButtonText: 'Cerrar'
-                    });
-                  }
-                  });
+      console.log("PRESTACION:::", this.prestacion);
+        if(resp.codigo == 200){
+           console.log("FONASA::::");
+           if(this.prestacion == 1 || this.prestacion == 2){
+                  this.citasReservadas.idEncuentroMedico= resp.idEncuentroMedico;
+                  this.citasReservadas.idencuentro =resp.idencuentro;
+                  this.citasReservadas.beneficiario = resp.data.beneficiario.nombres +' '+ resp.data.beneficiario.apellidos;
+                  this.citasReservadas.rut = resp.data.beneficiario.run;
+                  this.citasReservadas.tramo =resp.data.beneficiario.tramo;
 
+                          this.UsuarioService.valorizarPrestacion(resp, this.citasReservadas.codigo).subscribe((ret:any)=>{
+                            console.log("retorna valorizacion", ret);
+                          if(ret.codigo == 200){ 
+                          this.citasReservadas.nivel = ret.data.bonoValorizado.nivel;
+                          this.citasReservadas.valortotal = ret.data.bonoValorizado.prestacionesValorizadas[0].montoTotal;
+                          this.citasReservadas.copago =ret.data.bonoValorizado.prestacionesValorizadas[0].montoCopago;
+                          this.citasReservadas.bonificacion =  ret.data.bonoValorizado.prestacionesValorizadas[0].montoBonificado;
+                          this.spinner.hide();
+                          this.modalService.open(content, { size: 'lg' });
+                          }
+                          if(ret.codigo != 200){
+                            this.spinner.hide();
+                            Swal.fire({
+                              title: 'Error!',
+                              text: "No se pudop valorizar la prestación",
+                              icon: 'error',
+                              confirmButtonText: 'Cerrar'
+                            });
+                          }
+                          });
+            }
+            if(this.prestacion == 3 || this.prestacion == 4){
+
+            }
         }
         if(resp.codigo == 202 ){//no es fonasa
+          console.log("PARTICULAR SI EXISTE");
+          if(this.prestacion ==1 || this.prestacion == 2){
+            this.citasReservadas.beneficiario=resp.data; 
+            this.citasReservadas.suc_id = this.sucursal;
+            const prestaciones = [{
+              codigo :this.citasReservadas.codigo
+            }]
+            this.citasReservadas.prestaciones =prestaciones;
+            this.UsuarioService.valorizaPrestaciones(this.citasReservadas).subscribe((ret:any)=>{
+              console.log("ret", ret);
+              this.citasReservadas.beneficiario=null;
+              this.citasReservadas.idEncuentroMedico=  0;
+              this.citasReservadas.beneficiario =  resp.data.nombres+' '+resp.data.apellidos;
+              this.citasReservadas.run =  resp.data.run;
+              this.citasReservadas.nivel = resp.data.tramo;
+              this.prestacionesValorizadas = ret.data.prestaciones;
+              this.citasReservadas.valortotal = ret.data.totalGeneral;
+              this.citasReservadas.bonificacion =ret.data.totalBonificacion;
+              this.citasReservadas.copago = ret.data.totalCopago;
+              });    
+            this.spinner.hide();
+            this.modalService.open(content, { size: 'lg' });
+        }
+        if(this.prestacion ==3 || this.prestacion == 4){
           this.citasReservadas.beneficiario=resp.data; 
           this.citasReservadas.suc_id = this.sucursal;
-          console.log("LO QUE MANDO", this.citasReservadas);  
           this.UsuarioService.valorizaPrestaciones(this.citasReservadas).subscribe((ret:any)=>{
             this.citasReservadas.nombre_profesional = this.citasReservadas.prestaciones[0].grp_nombre;
             this.citasReservadas.idEncuentroMedico=  0;
@@ -556,25 +584,17 @@ buscarBeneficiario(content, content1, content2){
             this.prestacionesValorizadas.totalGeneral = ret.data.totalGeneral;
             this.prestacionesValorizadas.totalBonificacion =ret.data.totalBonificacion;
             this.prestacionesValorizadas.totalCopago = ret.data.totalCopago;
-            console.log("presta:::", this.prestacionesValorizadas);
-          });    
-
-
+            });    
           this.spinner.hide();
-          // Swal.fire({
-          //   title: 'Error!',
-          //   text: resp.mensaje,
-          //   icon: 'error',
-          //   confirmButtonText: 'Cerrar'
-          // });
           this.modalService.open(content2, { size: 'lg' });
+        }
         } 
         if(resp.codigo == 201){
+          console.log("PARTIUCLAR NO EXITE::::");
           this.spinner.hide();
           Swal.fire({
             title: 'Error!',
             text: resp.data.mensaje,
-            icon: 'error',
             confirmButtonText: 'Cerrar'
           });
           this.modalService.open(content1, { size: 'lg' });
@@ -713,6 +733,11 @@ console.log("lo que mando pt para guardar", data);
   });
 }
 
+
+
+pagoMultiple(){
+  
+}
 
 
 }
