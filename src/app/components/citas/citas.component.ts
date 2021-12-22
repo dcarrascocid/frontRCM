@@ -516,8 +516,9 @@ buscarBeneficiario(content, content1, content2){
       console.log("BUSCA BENE::",resp);
         if(resp.codigo == 200){ // es fonasa
           this.citasReservadas.idEncuentroMedico= resp.idEncuentroMedico;
+          this.citasReservadas.idencuentro =resp.idencuentro;
           this.citasReservadas.beneficiario = resp.data.beneficiario.nombres +' '+ resp.data.beneficiario.apellidos;
-          this.citasReservadas.run = resp.data.beneficiario.run;
+          this.citasReservadas.rut = resp.data.beneficiario.run;
           this.citasReservadas.tramo =resp.data.beneficiario.tramo;
                   this.UsuarioService.valorizarPrestacion(resp, this.citasReservadas.codigo).subscribe((ret:any)=>{
                     console.log("retorna valorizacion", ret);
@@ -599,8 +600,12 @@ buscarBeneficiario(content, content1, content2){
 confirmarPago(){
   this.spinner.show();
   this.citasReservadas;
+
+  
   if(this.citasReservadas.nivel != 'PARTICULAR'){
+    console.log("confiormar bono", this.citasReservadas);
       this.UsuarioService.confirmarBono(this.citasReservadas).subscribe((resp:any)=>{
+        console.log("respuesta", resp);
       if(resp.codigo == 200){
           this.citasReservadas.bono =resp.data;
 

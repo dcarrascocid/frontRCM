@@ -212,10 +212,10 @@ export class UsuarioService {
   }
 
   valorizarPrestacion(data, prestacion){
-
+console.log("lo que va la servivcio", data);
     const form ={
       rut: data.data.beneficiario.run,
-      idencuentro: data.idEncuentroMedico,
+      idencuentro: data.idencuentro,
       codigoprestacion: prestacion,
       rutprestadortratante : data.rut,
     };
