@@ -69,15 +69,6 @@
                         </div>
 
                     </div>
-                    <div class="form-check form-check-inline" (change)="cambiaVer($event.target.value)">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="rdDia" value="1" checked>
-                        <label class="form-check-label" for="rdDia">Fonasa</label>
-                    </div>
-    
-                    <div class="form-check form-check-inline" (change)="cambiaVer($event.target.value)">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="rdSemana" value="2">
-                        <label class="form-check-label" for="rdSemana">Otro</label>
-                    </div>
                     <div>
                         <input class="form-control" type="text" formControlName="rut" (change)="validarRut()" placeholder="Ingrese numero de documento" />
                         <div *ngIf="revItemForm.rut.errors">

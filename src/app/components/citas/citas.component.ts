@@ -665,8 +665,7 @@ confirmarPago(){
         this.UsuarioService.confirmarBono(data).subscribe((resp:any)=>{
           console.log("respuesta", resp);
         if(resp.codigo == 200){
-            this.citasReservadas.bono =resp.data;
-  
+            
             // this.UsuarioService.DisparadorReserva.emit({data:this.citasReservadas });
             localStorage.setItem("reserva",  JSON.stringify(this.citasReservadas))
             this.UsuarioService.buscarCopiaBono(resp.data.bonoValorizado.folio).subscribe((bono:any)=>{

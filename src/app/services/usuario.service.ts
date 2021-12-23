@@ -218,7 +218,7 @@ export class UsuarioService {
       codigoprestacion: prestacion,
       rutprestadortratante : data.rut,
     };
-
+    console.log("valoriza encuentro", form);
     return this.http.post(`${ base_url }/fon-valorizar-encuentro`, form); 
    }
 
