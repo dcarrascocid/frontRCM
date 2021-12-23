@@ -507,9 +507,9 @@ buscarBeneficiario(content, content1, content2){
       confirmButtonText: 'Cerrar'
     });
   }
-
   if(this.consultaForm.value.tipoDoc ==1){//es rut 
     console.log("LO QUE TENGO", this.citasReservadas);
+    if(!this.citasReservadas.prestaciones){
     this.UsuarioService.buscarbeneficiario(data).subscribe((resp:any)=>{
       console.log("BUSCA BENE::",resp);
       console.log("PRESTACION:::", this.prestacion);
@@ -521,7 +521,7 @@ buscarBeneficiario(content, content1, content2){
                   this.citasReservadas.beneficiario = resp.data.beneficiario.nombres +' '+ resp.data.beneficiario.apellidos;
                   this.citasReservadas.rut = resp.data.beneficiario.run;
                   this.citasReservadas.tramo =resp.data.beneficiario.tramo;
-
+                  this.citasReservadas.run = resp.data.beneficiario.run;
                           this.UsuarioService.valorizarPrestacion(resp, this.citasReservadas.codigo).subscribe((ret:any)=>{
                             console.log("retorna valorizacion", ret);
                           if(ret.codigo == 200){ 
@@ -601,7 +601,10 @@ buscarBeneficiario(content, content1, content2){
         }      
 
     });
-
+    }
+    if(this.citasReservadas.prestaciones){
+      this.pagoMultiple(data, this.citasReservadas.prestaciones, content2);
+    }
   }
   if(this.consultaForm.value.tipoDoc == 2 ){ //direrente a rut
     this.spinner.hide();
@@ -620,10 +623,10 @@ buscarBeneficiario(content, content1, content2){
 confirmarPago(){
   this.spinner.show();
   this.citasReservadas;
+  console.log("CITAS RESERVADAS", this.citasReservadas);
 
-  
   if(this.citasReservadas.nivel != 'PARTICULAR'){
-    console.log("confiormar bono", this.citasReservadas);
+      if(!this.citasReservadas.encuentros){
       this.UsuarioService.confirmarBono(this.citasReservadas).subscribe((resp:any)=>{
         console.log("respuesta", resp);
       if(resp.codigo == 200){
@@ -652,6 +655,43 @@ confirmarPago(){
         });  
       }
   })
+      }
+      if(this.citasReservadas.encuentros){
+        for(let index = 0; index < this.citasReservadas.encuentros.length; index++){
+        const data ={
+          idencuentro:this.citasReservadas.encuentros[index].idencuentro,
+          rut:this.citasReservadas.rut,
+        }
+        this.UsuarioService.confirmarBono(data).subscribe((resp:any)=>{
+          console.log("respuesta", resp);
+        if(resp.codigo == 200){
+            this.citasReservadas.bono =resp.data;
+  
+            // this.UsuarioService.DisparadorReserva.emit({data:this.citasReservadas });
+            localStorage.setItem("reserva",  JSON.stringify(this.citasReservadas))
+            this.UsuarioService.buscarCopiaBono(resp.data.bonoValorizado.folio).subscribe((bono:any)=>{
+              console.log("BONO:::", bono);
+              if(bono.codigo ==200){
+                window.open(bono.data.url, '_blank');
+                // this.router.navigate([bono.data.url]);
+              }
+            })
+            this.modalService.dismissAll();
+            this.router.navigate(['/reservas/confirmacion']);
+            this.spinner.hide();
+        }
+        if(resp.codigo != 200){
+          this.spinner.hide();
+          Swal.fire({
+            title: 'Error!',
+            text: 'No se pudo realizar el pago!!',
+            icon: 'error',
+            confirmButtonText: 'Cerrar'
+          });  
+        }
+    })
+  }
+        }
   }
   if(this.citasReservadas.nivel == 'PARTICULAR'){
       const data ={
@@ -735,7 +775,79 @@ console.log("lo que mando pt para guardar", data);
 
 
 
-pagoMultiple(){
+pagoMultiple(data, prestaciones, content2){
+  let prestaTemp=[];
+  let encuentroTemp=[];
+  this.spinner.show();
+  if(prestaciones.length != 0 ){
+    console.log("RUT", data);
+    console.log("prestacones",prestaciones);
+
+    for(let index = 0; index < prestaciones.length; index++){
+
+      var totalGeneral=0;
+      var totalBonificacion=0;
+      var totalCopago=0;
+      this.UsuarioService.buscarbeneficiario(data).subscribe((resp:any)=>{
+        console.log("RESP::::", resp);
+        if(resp.codigo ==200){
+          this.citasReservadas.idencuentro =resp.idencuentro;
+          this.citasReservadas.beneficiario = resp.data.beneficiario.nombres +' '+ resp.data.beneficiario.apellidos;
+          this.citasReservadas.rut = resp.data.beneficiario.run;
+          this.citasReservadas.run = resp.data.beneficiario.run;
+          this.citasReservadas.tramo =resp.data.beneficiario.tramo;
+          this.citasReservadas.nivel =resp.data.beneficiario.tramo;
+          const encuentroId={idencuentro:resp.idencuentro}
+          encuentroTemp.push(encuentroId);
+        
+      
+          this.UsuarioService.valorizarPrestacion(resp, prestaciones[index].codigo).subscribe((ret:any)=>{
+            console.log("ret:::", ret);
+            if(ret.codigo==200){
+
+              const prestacionesValorizadasFon = {
+                prestacion:ret.data.bonoValorizado.prestacionesValorizadas[0].glosa,
+                codigo:ret.data.bonoValorizado.prestacionesValorizadas[0].codigo,
+                valortotal:ret.data.bonoValorizado.prestacionesValorizadas[0].montoTotal,
+                bonificacion:ret.data.bonoValorizado.prestacionesValorizadas[0].montoBonificado,
+                copago:ret.data.bonoValorizado.prestacionesValorizadas[0].montoCopago,
+
+              };
+              prestaTemp.push(prestacionesValorizadasFon);
+              this.prestacionesValorizadas=prestaTemp;
+               totalGeneral =  totalGeneral + ret.data.bonoValorizado.prestacionesValorizadas[0].montoTotal;
+               totalBonificacion =  totalBonificacion + ret.data.bonoValorizado.prestacionesValorizadas[0].montoBonificado;
+               totalCopago =  totalCopago + ret.data.bonoValorizado.prestacionesValorizadas[0].montoCopago;
+               console.log("total gral", totalGeneral);
+            }
+            if(index == (prestaciones.length -1)){
+              this.citasReservadas.encuentros= encuentroTemp;
+              this.prestacionesValorizadas.totalGeneral = totalGeneral;
+              this.prestacionesValorizadas.totalBonificacion= totalBonificacion;
+              this.prestacionesValorizadas.totalCopago =totalCopago;
+              this.spinner.hide();
+              this.modalService.open(content2, { size: 'lg' });
+    
+            }
+          });
+
+        }
+        if(resp.codigo == 203){
+          this.spinner.hide();
+          Swal.fire({
+            title: 'Error!',
+            text: resp.data.mensaje,
+            icon: 'error',
+            confirmButtonText: 'Cerrar'
+          });    
+        }
+
+
+      });
+
+    }
+
+  }
   
 }
 
