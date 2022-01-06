@@ -11,6 +11,8 @@ import {Router} from '@angular/router';
 })
 export class ConfirmacionCitaComponent implements OnInit {
 public reserva;
+public tipoReservaCita:boolean=true;
+public tipoReservaExa:boolean=true;
 
   constructor(
     public UsuarioService :UsuarioService,
@@ -20,12 +22,20 @@ public reserva;
   ) { }
 
   ngOnInit() {
+
   this.getdatosConfirmacionCita();
   }
 
 
   getdatosConfirmacionCita(){
     this.reserva = JSON.parse(localStorage.getItem('reserva')); 
+    console.log("reserva::::", this.reserva);
+    // if(this.reserva.agen_idagenda){
+    //   // this.tipoReserva=true;
+    // }
+    // if(!this.reserva.agen_idagenda){
+    //   // this.tipoReserva =true;
+    // }
     localStorage.clear();
   }
 

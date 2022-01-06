@@ -320,13 +320,13 @@ cambiaPrestacion(pres_id){
 //  console.log(pres_id);
  switch (Number(pres_id)) {
   case 1:
-    this.calendar=false;
-    this.imagen=true;
+    this.calendar=true;
+    this.imagen=false;
     this.laboratorio=true;
   break;
   case 2:
-    this.calendar=false;
-    this.imagen=true;
+    this.calendar=true;
+    this.imagen=false;
     this.laboratorio=true;
   break;
   case 3:
@@ -349,8 +349,12 @@ cambiaPrestacion(pres_id){
 
 buscarCita(){
   this.spinner.show();
-  console.log("tester::::",this.profesional , "sdasas" ,this.profesionales);
-  if(!this.prestador && !this.prestacion && !this.especialidad ){
+  this.calendar=false;
+  this.citas=null;
+  // console.log("tester::::",this.profesional , "sdasas" ,this.profesionales);
+  console.log("prestacion", this.prestador);
+  if(!this.prestacion || !this.especialidad ){
+    this.spinner.hide();
     Swal.fire({
       // title: 'Error!',
       text: 'Faltan datos para la busqueda',
@@ -358,7 +362,8 @@ buscarCita(){
       confirmButtonText: 'Cerrar'
     });
 
-  }
+  }else{
+    console.log("entro an else");
     const data={
       pre_id:this.prestador,
       esp_id:this.especialidad,
@@ -451,8 +456,8 @@ buscarCita(){
   
     }
   
- this.spinner.hide();
-
+  this.spinner.hide();
+  }
   
 }
 
@@ -551,13 +556,12 @@ buscarBeneficiario(content, content1, content2){
     });
   }
   if(this.consultaForm.value.tipoDoc ==1){//es rut 
-    console.log("LO QUE TENGO", this.citasReservadas);
+    // console.log("LO QUE TENGO", this.citasReservadas);
     if(!this.citasReservadas.prestaciones){
     this.UsuarioService.buscarbeneficiario(data).subscribe((resp:any)=>{
-      console.log("BUSCA BENE::",resp);
-      console.log("PRESTACION:::", this.prestacion);
+      // console.log("BUSCA BENE::",resp);
+      // console.log("PRESTACION:::", this.prestacion);
         if(resp.codigo == 200){
-           console.log("FONASA::::");
            if(this.prestacion == 1 || this.prestacion == 2){
                   this.citasReservadas.idEncuentroMedico= resp.idEncuentroMedico;
                   this.citasReservadas.idencuentro =resp.idencuentro;
@@ -566,14 +570,26 @@ buscarBeneficiario(content, content1, content2){
                   this.citasReservadas.tramo =resp.data.beneficiario.tramo;
                   this.citasReservadas.run = resp.data.beneficiario.run;
                           this.UsuarioService.valorizarPrestacion(resp, this.citasReservadas.codigo).subscribe((ret:any)=>{
-                            console.log("retorna valorizacion", ret);
-                          if(ret.codigo == 200){ 
-                          this.citasReservadas.nivel = ret.data.bonoValorizado.nivel;
-                          this.citasReservadas.valortotal = ret.data.bonoValorizado.prestacionesValorizadas[0].montoTotal;
-                          this.citasReservadas.copago =ret.data.bonoValorizado.prestacionesValorizadas[0].montoCopago;
-                          this.citasReservadas.bonificacion =  ret.data.bonoValorizado.prestacionesValorizadas[0].montoBonificado;
-                          this.spinner.hide();
-                          this.modalService.open(content, { size: 'lg' });
+                            // console.log("retorna valorizacion", ret);
+                          if(ret.codigo == 200){
+                            if(ret.data.codigo == 405){
+                              this.spinner.hide();
+                                Swal.fire({
+                                  // title: 'Error!',
+                                  text: 'Conexión de fonasa inestable intente nuevamente',
+                                  icon: 'warning',
+                                  confirmButtonText: 'Cerrar'
+                                });
+                            }else{
+
+                              this.citasReservadas.nivel = ret.data.bonoValorizado.nivel;
+                              this.citasReservadas.valortotal = ret.data.bonoValorizado.prestacionesValorizadas[0].montoTotal;
+                              this.citasReservadas.copago =ret.data.bonoValorizado.prestacionesValorizadas[0].montoCopago;
+                              this.citasReservadas.bonificacion =  ret.data.bonoValorizado.prestacionesValorizadas[0].montoBonificado;
+                              this.spinner.hide();
+                              this.modalService.open(content, { size: 'lg' });
+                              
+                            }
                           }
                           if(ret.codigo != 200){
                             this.spinner.hide();
@@ -591,7 +607,7 @@ buscarBeneficiario(content, content1, content2){
             }
         }
         if(resp.codigo == 202 ){//no es fonasa
-          console.log("PARTICULAR SI EXISTE");
+          // console.log("PARTICULAR SI EXISTE");
           if(this.prestacion ==1 || this.prestacion == 2){
             this.citasReservadas.beneficiario=resp.data; 
             this.citasReservadas.suc_id = this.sucursal;
@@ -600,7 +616,7 @@ buscarBeneficiario(content, content1, content2){
             }]
             this.citasReservadas.prestaciones =prestaciones;
             this.UsuarioService.valorizaPrestaciones(this.citasReservadas).subscribe((ret:any)=>{
-              console.log("ret", ret);
+              // console.log("ret", ret);
               this.citasReservadas.beneficiario=null;
               this.citasReservadas.idEncuentroMedico=  0;
               this.citasReservadas.beneficiario =  resp.data.nombres+' '+resp.data.apellidos;
@@ -674,9 +690,9 @@ confirmarPago(){
       this.UsuarioService.confirmarBono(this.citasReservadas).subscribe((resp:any)=>{
         console.log("respuesta", resp);
       if(resp.codigo == 200){
-          this.citasReservadas.bono =resp.data;
-
+          this.citasReservadas.bonos =resp.data;
           // this.UsuarioService.DisparadorReserva.emit({data:this.citasReservadas });
+          console.log("reserva local",this.citasReservadas );
           localStorage.setItem("reserva",  JSON.stringify(this.citasReservadas))
           this.UsuarioService.buscarCopiaBono(resp.data.bonoValorizado.folio).subscribe((bono:any)=>{
             console.log("BONO:::", bono);
@@ -824,10 +840,10 @@ pagoMultiple(data, prestaciones, content2){
   this.spinner.show();
   if(prestaciones.length != 0 ){
     console.log("RUT", data);
-    console.log("prestacones",prestaciones);
+    console.log("prestacones",prestaciones.length);
 
     for(let index = 0; index < prestaciones.length; index++){
-
+      console.log("enrtro", index);
       var totalGeneral=0;
       var totalBonificacion=0;
       var totalCopago=0;
@@ -842,11 +858,20 @@ pagoMultiple(data, prestaciones, content2){
           this.citasReservadas.nivel =resp.data.beneficiario.tramo;
           const encuentroId={idencuentro:resp.idencuentro}
           encuentroTemp.push(encuentroId);
-        
+          console.log("enceuntro", encuentroTemp);
       
           this.UsuarioService.valorizarPrestacion(resp, prestaciones[index].codigo).subscribe((ret:any)=>{
             console.log("ret:::", ret);
             if(ret.codigo==200){
+              if(ret.data.codigo == 405){
+                this.spinner.hide();
+                  Swal.fire({
+                    // title: 'Error!',
+                    text: 'Conexión de fonasa inestable intente nuevamente',
+                    icon: 'warning',
+                    confirmButtonText: 'Cerrar'
+                  });
+              }else{
 
               const prestacionesValorizadasFon = {
                 prestacion:ret.data.bonoValorizado.prestacionesValorizadas[0].glosa,
@@ -861,7 +886,11 @@ pagoMultiple(data, prestaciones, content2){
                totalGeneral =  totalGeneral + ret.data.bonoValorizado.prestacionesValorizadas[0].montoTotal;
                totalBonificacion =  totalBonificacion + ret.data.bonoValorizado.prestacionesValorizadas[0].montoBonificado;
                totalCopago =  totalCopago + ret.data.bonoValorizado.prestacionesValorizadas[0].montoCopago;
-               console.log("total gral", totalGeneral);
+    
+              } 
+
+
+
             }
             if(index == (prestaciones.length -1)){
               this.citasReservadas.encuentros= encuentroTemp;
@@ -870,10 +899,11 @@ pagoMultiple(data, prestaciones, content2){
               this.prestacionesValorizadas.totalCopago =totalCopago;
               this.spinner.hide();
               this.modalService.open(content2, { size: 'lg' });
-    
             }
+
           });
 
+  
         }
         if(resp.codigo == 203){
           this.spinner.hide();
@@ -887,8 +917,19 @@ pagoMultiple(data, prestaciones, content2){
 
 
       });
-
-    }
+        console.log("salio", index);
+        // console.log("totalGeneral",totalGeneral);
+        // console.log("repstaciones", prestaciones.length);
+        // if(index == (prestaciones.length -1)){
+        //   this.citasReservadas.encuentros= encuentroTemp;
+        //   this.prestacionesValorizadas.totalGeneral = totalGeneral;
+        //   this.prestacionesValorizadas.totalBonificacion= totalBonificacion;
+        //   this.prestacionesValorizadas.totalCopago =totalCopago;
+        //   this.spinner.hide();
+        //   this.modalService.open(content2, { size: 'lg' });
+  
+        // } 
+    }//END
 
   }
   

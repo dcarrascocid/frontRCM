@@ -31,7 +31,7 @@
 
 
 
-                <div class=" btn-group">
+                <div class="btn-group">
                     <div class="btn-group-tittle" style="text-align: center;">
                         Fecha Desde:
                         <input type="date" (change)="cambiaFecha($event.target)" [formControl]="fecha1">
@@ -53,13 +53,13 @@
                 </div>
                 <div class="card-body">
 
-                    <select name="profesionales" class="form-select form-select-sm" (change)="cambiaProfesional($event.target.value)">
+                    <select name="profesionales" class="form-select form-select-sm" (change)="cambiaProfesional($event.target.value)" [disabled]="imagen">
                         <option selected >Seleccione Profesional</option>
                         <option [value]="item.pro_idprofesional" *ngFor="let item of profesionales">{{ item.nombre_profesional}}</option>
                     </select>
 
-                    <div class="d-grid gap-3 col-4 mx-auto mt-5 ">
-                        <button class="btn btn-primary" (click)=buscarCita() type="submit">Buscar Cita</button>
+                    <div class="d-grid gap-3 col-4 mx-auto mt-5 " >
+                        <button class="btn btn-primary" (click)=buscarCita() type="submit" [disabled]="imagen">Buscar Cita</button>
                     </div>
                 </div>
             </div>
@@ -78,9 +78,9 @@
                         <div class="btn-group">
 
                             <input type="radio" class="btn-check" formControlName="tipoDoc" value="1" autocomplete="off" checked>
-                            <label class="btn btn-outline-primary btn-block">RUT</label>
+                            <label class="btn btn-outline-primary btn-block btn-sm">RUT</label>
                             <input type="radio" class="btn-check" formControlName="tipoDoc" value="2" autocomplete="off">
-                            <label class="btn btn-outline-primary btn-block">OTRO DOCUMENTO</label>
+                            <label class="btn btn-outline-primary btn-block btn-sm">OTRO DOCUMENTO</label>
                         </div>
 
                     </div>
@@ -116,8 +116,8 @@
                         <label class="col-form-label col-3 col-md-4" for="">Prestacion</label>
                         <div class="card">
                             <div class="form-check text-left" name="prestaciones" *ngFor="let item of prestaciones" (change)="cambiaPrestacion($event.target.id)">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="{{ item.id }}">
-                                <label class="form-check-label" for="flexRadioDefault1">
+                                <input class="form-check-input form-check-input-sm" type="radio" name="flexRadioDefault" id="{{ item.id }}">
+                                <label class="form-check-label form-check-label-sm" for="flexRadioDefault1">
                                  {{ item.nombre}}
                                 </label>
                             </div>
@@ -126,7 +126,7 @@
                     <div class="border mb-4">
                         <label class="col-form-label col-3 col-md-4" for="cboEspe">Especialidad</label>
                         <div>
-                            <select name="especialidades" class="form-select form-select-sm" (change)="cambiaEspecialidad($event.target.value)">
+                            <select name="especialidades" class="form-select form-select-sm" (change)="cambiaEspecialidad($event.target.value)" [disabled]="imagen">
                                     <option selected >Seleccione Especialidad</option>
                                     <option [value]="item.id" *ngFor="let item of especialidades">{{ item.nombre}}</option>
                                 </select>
@@ -184,57 +184,57 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label class="form-label" for="txtPaciente">Paciente</label>
-                    <input type="text" class="form-control" id="txtPaciente" value="{{citasReservadas.beneficiario}}" disabled>
+                    <input type="text" class="form-control form-control-sm" id="txtPaciente" value="{{citasReservadas.beneficiario}}" disabled>
                 </div>
                 <div class="form-group col-md-4">
                     <label class="form-label" for="txtNivel">Nivel</label>
-                    <input type="text" class="form-control" id="txtNivel" value="{{citasReservadas.nivel}} " disabled>
+                    <input type="text" class="form-control form-control-sm" id="txtNivel" value="{{citasReservadas.nivel}} " disabled>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-md-4">
                     <label class="form-label" for="txtPrfesional">Profesional</label>
-                    <input type="text" class="form-control" id="txtProfesional" value="{{citasReservadas.nombre_profesional}}" disabled>
+                    <input type="text" class="form-control form-control-sm" id="txtProfesional" value="{{citasReservadas.nombre_profesional}}" disabled>
                 </div>
                 <div class="form-group col-md-4">
                     <label class="form-label" for="slcPrestacion">Prestacion</label>
-                    <input type="text" class="form-control" id="txtCodPrestacion" value="{{ citasReservadas.nombre }}" disabled>
+                    <input type="text" class="form-control form-control-sm" id="txtCodPrestacion" value="{{ citasReservadas.nombre }}" disabled>
                 </div>
                 <div class="form-group col-md-4">
                     <label class="form-label" for="txtCodPrestacion">Código Prestación</label>
-                    <input type="text" class="form-control" id="txtCodPrestacion" value="{{ citasReservadas.codigo }}" disabled>
+                    <input type="text" class="form-control form-control-sm" id="txtCodPrestacion" value="{{ citasReservadas.codigo }}" disabled>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-md-4">
                     <label class="form-label" for="txtValorT">Valor total</label>
-                    <input type="text" class="form-control" id="txtValorT" value="{{ citasReservadas.valortotal }}" disabled>
+                    <input type="text" class="form-control form-control-sm" id="txtValorT" value="{{ citasReservadas.valortotal }}" disabled>
                 </div>
                 <div class="form-group col-md-4">
                     <label class="form-label" for="txtBonificacion">Bonificación</label>
-                    <input type="text" class="form-control" id="txtBonificacion" value="{{ citasReservadas.bonificacion }}" disabled>
+                    <input type="text" class="form-control form-control-sm" id="txtBonificacion" value="{{ citasReservadas.bonificacion }}" disabled>
                 </div>
                 <div class="form-group col-md-4">
                     <label class="form-label" for="txtValorC">Valor Copago</label>
-                    <input type="text" class="form-control" id="txtValorC" value="{{ citasReservadas.copago }}" disabled>
+                    <input type="text" class="form-control form-control-sm" id="txtValorC" value="{{ citasReservadas.copago }}" disabled>
                 </div>
             </div>
             <div class="row mb-4">
                 <div class="form-group col-md-4">
                     <label class="form-label" for="txtFecha">Fecha</label>
-                    <input type="text" class="form-control" id="txtFecha" value="{{ citasReservadas.fecha }}" disabled>
+                    <input type="text" class="form-control form-control-sm" id="txtFecha" value="{{ citasReservadas.fecha }}" disabled>
                 </div>
                 <div class="form-group col-md-4">
                     <label class="form-label" for="txtHora">Hora</label>
-                    <input type="text" class="form-control" id="txtHora" value="{{ citasReservadas.agen_hora }}" disabled>
+                    <input type="text" class="form-control form-control-sm" id="txtHora" value="{{ citasReservadas.agen_hora }}" disabled>
                 </div>
                 <div class="form-group col-md-2"></div>
             </div>
 
             <div class="d-grid gap-2 d-md-flex justify-content-md">
-                <button (click)="confirmarPago()" class="btn btn-success">Comprar bono</button>
-                <button class="btn btn-secondary">Copago</button>
-                <button class="btn btn-danger">Volver</button>
+                <button (click)="confirmarPago()" class="btn btn-success btn-sm">Comprar bono</button>
+                <button class="btn btn-secondary btn-sm">Copago</button>
+                <button class="btn btn-danger btn-sm">Volver</button>
             </div>
         </form>
 
@@ -263,38 +263,38 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label class="form-label" for="txtRut">Rut</label>
-                    <input type="text" class="form-control" formControlName="res_numerodocumento" value="">
+                    <input type="text" class="form-control form-control-sm" formControlName="res_numerodocumento" value="">
                 </div>
                 <div class="form-group col-md-3">
                     <label class="form-label" for="txtPaciente">digito verificador</label>
-                    <input type="text" class="form-control" formControlName="res_numdocdv" value="">
+                    <input type="text" class="form-control form-control-sm" formControlName="res_numdocdv" value="">
                 </div>
                 <div class="form-group col-md-3">
                     <label class="form-label" for="txtPaciente">Apellido Paterno</label>
-                    <input type="text" class="form-control" formControlName="res_paterno" value="">
+                    <input type="text" class="form-control form-control-sm" formControlName="res_paterno" value="">
                 </div>
                 <div class="form-group col-md-3">
                     <label class="form-label" for="txtPaciente">Apellido Materno</label>
-                    <input type="text" class="form-control" formControlName="res_materno" value="">
+                    <input type="text" class="form-control form-control-sm"  formControlName="res_materno" value="">
                 </div>
 
             </div>
             <div class="row">
                 <div class="form-group col-md-3">
                     <label class="form-label" for="txtPaciente">Nombres</label>
-                    <input type="text" class="form-control" formControlName="res_nombres" value="">
+                    <input type="text" class="form-control form-control-sm" formControlName="res_nombres" value="">
                 </div>
                 <div class="form-group col-md-3">
                     <label class="form-label" for="txtRut">telefono</label>
-                    <input type="text" class="form-control" formControlName="res_telefono" value="">
+                    <input type="text" class="form-control form-control-sm" formControlName="res_telefono" value="">
                 </div>
                 <div class="form-group col-md-3">
                     <label class="form-label" for="txtNivel">Correo Electronico</label>
-                    <input type="text" class="form-control" formControlName="res_correo" value="">
+                    <input type="text" class="form-control form-control-sm" formControlName="res_correo" value="">
                 </div>
             </div>
             <div class="d-grid gap-2 d-md-flex justify-content-md">
-                <button type="submit" class="btn btn-success">Guardar Datos</button>
+                <button type="submit" class="btn btn-success btn-sm" >Guardar Datos</button>
             </div>
         </form>
 
@@ -316,40 +316,40 @@
             <div class="row">
                 <div class="form-group-sm col-md-4">
                     <label class="form-label" for="txtRut">Rut</label>
-                    <input type="text" class="form-control" id="txtRut" value="{{citasReservadas.run}}" disabled>
+                    <input type="text" class="form-control form-control-sm" id="txtRut" value="{{citasReservadas.run}}" disabled>
                 </div>
                 <div class="form-group-sm col-md-4">
                     <label class="form-label" for="txtPaciente">Paciente</label>
-                    <input type="text" class="form-control" id="txtPaciente" value="{{citasReservadas.beneficiario}}" disabled>
+                    <input type="text" class="form-control form-control-sm" id="txtPaciente" value="{{citasReservadas.beneficiario}}" disabled>
                 </div>
                 <div class="form-group-sm col-md-4">
                     <label class="form-label" for="txtNivel">Nivel</label>
-                    <input type="text" class="form-control" id="txtNivel" value="{{citasReservadas.nivel}} " disabled>
+                    <input type="text" class="form-control form-control-sm" id="txtNivel" value="{{citasReservadas.nivel}} " disabled>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-md-2">
                     <label class="form-label" for="txtFecha">Fecha</label>
-                    <input type="text" class="form-control" id="txtFecha" value="{{ citasReservadas.fecha }}" disabled>
+                    <input type="text" class="form-control form-control-sm" id="txtFecha" value="{{ citasReservadas.fecha }}" disabled>
                 </div>
                 <div class="form-group col-md-2">
                     <label class="form-label" for="txtHora">Hora</label>
-                    <input type="text" class="form-control" id="txtHora" value="{{ citasReservadas.agen_hora }}" disabled>
+                    <input type="text" class="form-control form-control-sm" id="txtHora" value="{{ citasReservadas.agen_hora }}" disabled>
                 </div>
                 <div class="form-group col-md-4">
                     <label class="form-label" for="txtPrfesional">Rut Med. Solicitante</label>
-                    <input type="text" class="form-control" id="txtProfesional" value="" placeholder="Ingrese Rut Medico tratante">
+                    <input type="text" class="form-control form-control-sm" id="txtProfesional" value="" placeholder="Ingrese Rut Medico tratante">
                 </div>
                 <div class="form-group col-md-4">
                     <label class="form-label" for="slcPrestacion">Med. Solictante</label>
-                    <input type="text" class="form-control" id="txtCodPrestacion" value="" placeholder="Ingrese Nombres medico Tratante">
+                    <input type="text" class="form-control form-control-sm" id="txtCodPrestacion" value="" placeholder="Ingrese Nombres medico Tratante">
                 </div>
                 <div class="form-group col-md-2"></div>
             </div>
             <div class="row">
                 <div class="form-group col-md-4">
                     <label class="form-label" for="txtFecha">Orden Médica</label>
-                    <input type="text" class="form-control" id="txtFecha" value="" placeholder="Ingrese Número de orden médica">
+                    <input type="text" class="form-control form-control-sm" id="txtFecha" value="" placeholder="Ingrese Número de orden médica">
                 </div>
                 <div class="form-group col-md-4">
                     <label class="form-label" for="txtFecha">Concentimiento Informado</label>
@@ -388,28 +388,28 @@
                 <div class="mb-3 row">
                     <label for="inputPassword" class="col-sm-3 col-form-label">Valor Prestacion</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" value="{{ prestacionesValorizadas.totalGeneral }}" disabled>
+                        <input type="text" class="form-control form-control-sm" value="{{ prestacionesValorizadas.totalGeneral }}" disabled>
                     </div>
                 </div>
                 <div class="mb-3 row">
                     <label for="inputPassword" class="col-sm-3 col-form-label">Bonificación</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" value="{{ prestacionesValorizadas.totalBonificacion }}" disabled>
+                        <input type="text" class="form-control form-control-sm" value="{{ prestacionesValorizadas.totalBonificacion }}" disabled>
                     </div>
                 </div>
                 <div class="mb-3 row">
                     <label for="inputPassword" class="col-sm-3 col-form-label">Copago</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" value="{{ prestacionesValorizadas.totalCopago }}" disabled>
+                        <input type="text" class="form-control form-control-sm" value="{{ prestacionesValorizadas.totalCopago }}" disabled>
                     </div>
                 </div>
 
             </div>
 
             <div class="d-grid gap-2 d-md-flex justify-content-md">
-                <button (click)="confirmarPago()" class="btn btn-success">Comprar bono</button>
-                <button class="btn btn-secondary">Copago</button>
-                <button class="btn btn-danger">Volver</button>
+                <button (click)="confirmarPago()" class="btn btn-success btn-sm">Comprar bono</button>
+                <button class="btn btn-secondary btn-sm">Copago</button>
+                <button class="btn btn-danger btn-sm">Volver</button>
             </div>
         </form>
 
