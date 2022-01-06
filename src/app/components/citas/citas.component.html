@@ -8,7 +8,7 @@
             </div>
             <div class="card-body">
 
-                <select name="prestadores" class="form-select" (change)="cambiaSucursal($event.target.value)"> 
+                <select name="prestadores" class="form-select form-select-sm" (change)="cambiaSucursal($event.target.value)"> 
                     <option selected> Seleciones Prestador </option>
                     <option [value]="item.suc_id" *ngFor="let item of prestadores">{{ item.suc_nombre}}</option>
                 </select>
@@ -17,7 +17,7 @@
 
                 <div class="form-check form-check-inline" (change)="cambiaVer($event.target.value)">
 
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="rdDia" value="1" checked>
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="rdDia" value="1">
                     <label class="form-check-label" for="rdDia">Ver día</label>
 
                 </div>
@@ -53,7 +53,7 @@
                 </div>
                 <div class="card-body">
 
-                    <select name="profesionales" class="form-select" (change)="cambiaProfesional($event.target.value)">
+                    <select name="profesionales" class="form-select form-select-sm" (change)="cambiaProfesional($event.target.value)">
                         <option selected >Seleccione Profesional</option>
                         <option [value]="item.pro_idprofesional" *ngFor="let item of profesionales">{{ item.nombre_profesional}}</option>
                     </select>
@@ -85,7 +85,7 @@
 
                     </div>
                     <div>
-                        <input class="form-control" type="text" formControlName="rut" (change)="validarRut()" placeholder="Ingrese numero de documento" />
+                        <input class="form-control form-control-sm" type="text" formControlName="rut" (change)="validarRut()" placeholder="Ingrese numero de documento" />
                         <div *ngIf="revItemForm.rut.errors">
                             <span *ngIf="revItemForm.rut.errors.invalido">Rut no valido</span>
                         </div>
@@ -126,27 +126,27 @@
                     <div class="border mb-4">
                         <label class="col-form-label col-3 col-md-4" for="cboEspe">Especialidad</label>
                         <div>
-                            <select name="especialidades" class="form-select" (change)="cambiaEspecialidad($event.target.value)">
+                            <select name="especialidades" class="form-select form-select-sm" (change)="cambiaEspecialidad($event.target.value)">
                                     <option selected >Seleccione Especialidad</option>
                                     <option [value]="item.id" *ngFor="let item of especialidades">{{ item.nombre}}</option>
                                 </select>
                         </div>
                     </div>
-                    <div class="border">
+                    <!-- <div class="border">
                         <label for="">Georeferenciacion</label>
                         <div>
-                            <select name="regiones" class="form-select" (change)="cambiaRegion($event.target.value)">
+                            <select name="regiones" class="form-select form-select-sm" (change)="cambiaRegion($event.target.value)">
                                     <option selected >Seleccione Region</option>
                                     <option [value]="item.reg_idregion" *ngFor="let item of regiones">{{ item.reg_nombrecorto}}</option>
                                 </select>
                         </div>
                         <div>
-                            <select name="comunas" class="form-select" (change)="cambiaComuna($event.target.value)">
+                            <select name="comunas" class="form-select form-select-sm" (change)="cambiaComuna($event.target.value)">
                                     <option selected >Seleccione Comuna</option>
                                     <option [value]="item.com_idcomuna" *ngFor="let item of comunas">{{ item.com_nombrecorto}}</option>
                                 </select>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 
@@ -155,11 +155,14 @@
         <div class="col-sm-8 mt-2">
             <div class="card">
                 <div class="card-body" [hidden]="calendar">
-                    <app-calendario></app-calendario>
+                    <app-tabla-resultados></app-tabla-resultados>
                 </div>
                 <div class="card-body" [hidden]="laboratorio">
                     <app-laboratorio></app-laboratorio>
                 </div>
+                <!-- <div class="card-body">
+                    <app-tabla-resultados></app-tabla-resultados>
+                </div> -->
             </div>
         </div>
     </div>

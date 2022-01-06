@@ -6,7 +6,16 @@
       <div class="mb-3 row">
         <label class="col-sm-2 col-form-label">Tipo Exámen</label>
         <div class="col-sm-6">
-          <select name="prestaciones"  class="form-select" (change)="cambiaPrestacion($event.target.value)">
+          <select name="tipoPrestaciones"  class="form-select form-select-sm" (change)="cambiaTipoPrestacion($event.target.value)">
+            <option selected >Seleccione prestación</option>
+            <option [value]="item.tp_id"  *ngFor="let item of tipoPrestaciones">{{item.tp_nombre}}</option>
+        </select>
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label class="col-sm-2 col-form-label">Exámen</label>
+        <div class="col-sm-6">
+          <select name="prestaciones"  class="form-select form-select-sm" (change)="cambiaPrestacion($event.target.value)">
             <option selected >Seleccione prestación</option>
             <option [value]="item.id"  *ngFor="let item of prestaciones">{{item.prestacion}}-({{ item.codigo }})</option>
         </select>
@@ -22,14 +31,14 @@
           <tr>
             <th scope="col">EXÁMEN</th>
             <th scope="col">CODIGO FONASA</th>
-            <th scope="col">SELECCIÓN</th>
+            <!-- <th scope="col">SELECCIÓN</th> -->
           </tr>
         </thead>
         <tbody >
           <tr [prestacionSeleccionada]="prestacionSeleccionada" *ngFor="let prestacionSeleccionada of prestacionSeleccionada" >
             <th>{{ prestacionSeleccionada.prestacion}}</th>
             <td>{{ prestacionSeleccionada.codigo }}</td>
-            <td> <input class="form-check-input" type="checkbox" value="" id="{{ prestacionSeleccionada.id }}"></td>
+            <!-- <td> <input class="form-check-input" type="checkbox" value="" id="{{ prestacionSeleccionada.id }}"></td> -->
         </tbody>
       </table>
 

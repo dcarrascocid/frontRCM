@@ -9,6 +9,7 @@ import { UsuarioService } from '../../services/usuario.service';
 })
 export class LaboratorioComponent implements OnInit {
   public prestaciones; 
+  public tipoPrestaciones;
   public prestacion;
   public prestacionSeleccionada=[];
   public citaReservada:any=null;
@@ -18,16 +19,17 @@ export class LaboratorioComponent implements OnInit {
 
   ngOnInit() {
     this.UsuarioService.DisparaPrestacion.subscribe((resp:any)=>{
-      console.log("respuesta disparador", resp);
+      // console.log("respuesta disparador", resp);
       this.buscarPrestaciones(resp);
     });
   }
 
   buscarPrestaciones(datos){
-
+console.log("datossoososo:::", datos);
 
     this.UsuarioService.prestacionByGrupo(datos).subscribe((resp:any)=>{
         if(resp.codigo ==200){
+          this.tipoPrestaciones =resp.data
           this.prestaciones= resp.data;
           console.log("prestaciones", this.prestaciones);
 
@@ -62,6 +64,32 @@ export class LaboratorioComponent implements OnInit {
     if(this.prestacionSeleccionada.length == 0){
       console.log("no envio nada");
     }
+  }
+
+  buscaTipoPrestaciones(datos){
+    this.UsuarioService.prestacionByGrupo(datos).subscribe((resp:any)=>{
+      if(resp.codigo ==200){
+        this.tipoPrestaciones =resp.data
+        this.prestaciones= resp.data;
+        console.log("prestaciones", this.prestaciones);
+
+      }
+      if(resp.codigo !=200){
+
+      }
+  });
+  }
+
+  cambiaTipoPrestacion(tp_id){
+
+    this.UsuarioService.prestacionByTipo(tp_id).subscribe((resp:any)=>{
+      if(resp.codigo ==200){
+        this.prestaciones= resp.data;
+      }
+      if(resp.codigo !=200){
+
+      }
+  });
   }
   
 

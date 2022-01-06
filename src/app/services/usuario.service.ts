@@ -250,6 +250,12 @@ export class UsuarioService {
     return this.http.post(`${ base_url }/prestacionbygrupo`, data); 
    }
    
+   prestacionByTipo(id){
+    const data ={
+      tp_id:id
+    }
+    return this.http.post(`${ base_url }/prestacionbytipo`, data); 
+   }
 
 
 }

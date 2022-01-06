@@ -9,6 +9,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import {Router} from '@angular/router';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { right } from '@popperjs/core';
+import { isThisSecond } from 'date-fns';
 
 @Component({
   selector: 'app-citas',
@@ -33,9 +34,9 @@ export class CitasComponent implements OnInit {
   public datosReserva:any;
   fecha =new Date;
   public botonEnviar:boolean=false;
-  public fechaInicio = moment(this.fecha).format('YYYY-MM-DD');
+  public fechaInicio =null;
   public ultimoDia  = new Date(this.fecha.getFullYear(), this.fecha.getMonth() + 1, 0);
-  public fechaTermino=moment(this.ultimoDia).format('YYYY-MM-DD');
+  public fechaTermino=null;
   
   fecha1 = new FormControl(this.fechaInicio, []); 
   fecha2 = new FormControl(this.fechaTermino, []); 
@@ -45,9 +46,10 @@ export class CitasComponent implements OnInit {
   public codigoFonosa;
   public citasReservadas:any;
   public calendar:boolean=true;
-  public imagen:boolean=true;
-  public laboratorio:boolean =false;
+  public imagen:boolean=false;
+  public laboratorio:boolean =true;
   public prestacionesValorizadas;
+  public datosVista;
 
 
   constructor(
@@ -82,11 +84,14 @@ export class CitasComponent implements OnInit {
 
   ngOnInit() {
     this.spinner.show();
+    const date = new Date();
+    this.obtenerInicioYFinSemana(date);
     this.obetnerToken();
     this.BuscaSucursalesByPrestador();
     this.buscarPrestacinesFonasa();
     this.updateEvents();
     this.spinner.hide();
+
   }
 
   get revItemForm(){
@@ -100,7 +105,7 @@ export class CitasComponent implements OnInit {
       }
       if(resp.codigo!= 200){
         Swal.fire({
-          title: 'Error!',
+          // title: 'Error!',
           text: resp.mensaje,
           icon: 'error',
           confirmButtonText: 'Cerrar'
@@ -139,20 +144,6 @@ export class CitasComponent implements OnInit {
   }
   
 
-
-  fechas(){
-    
-    const date = new Date();
-     const primerDia = date;
-
-    //  const primerDia = new Date(date.getFullYear(), date.getMonth(), 1);
-     const ultimoDia  = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-      this.fechaInicio = moment(primerDia).format('YYYY-MM-DD');
-      this.fechaTermino = moment(ultimoDia).format('YYYY-MM-DD');
-
-     
-    }
-
   enviar(content){
 
     this.modalService.open(content, { size: 'lg' });
@@ -165,7 +156,7 @@ export class CitasComponent implements OnInit {
 
         if(!data.data){
           Swal.fire({
-            title: 'Error!',
+            // title: 'Error!',
             text: data.data,
             icon: 'error',
             confirmButtonText: 'Cerrar'
@@ -282,7 +273,7 @@ buscarProfespecialidad(esp_idespecialidad){
     
     if(resp.data.length ==0){
       Swal.fire({
-        title: 'Error!',
+        // title: 'Error!',
         text: resp.mensaje,
         icon: 'error',
         confirmButtonText: 'Cerrar'
@@ -308,9 +299,9 @@ buscaPrestacion(suc_id){
             if(resp.codigo != 200){
               this.prestaciones=null;
               Swal.fire({
-                title: 'Error!',
+                // title: 'Error!',
                 text: resp.mensaje,
-                icon: 'error',
+                icon: 'warning',
                 confirmButtonText: 'Cerrar'
               });
             } 
@@ -326,7 +317,7 @@ cambiaPrestacion(pres_id){
   };
   this.UsuarioService.DisparaPrestacion.emit(data);
   this.prestacion=pres_id
- console.log(pres_id);
+//  console.log(pres_id);
  switch (Number(pres_id)) {
   case 1:
     this.calendar=false;
@@ -358,11 +349,12 @@ cambiaPrestacion(pres_id){
 
 buscarCita(){
   this.spinner.show();
+  console.log("tester::::",this.profesional , "sdasas" ,this.profesionales);
   if(!this.prestador && !this.prestacion && !this.especialidad ){
     Swal.fire({
-      title: 'Error!',
+      // title: 'Error!',
       text: 'Faltan datos para la busqueda',
-      icon: 'error',
+      icon: 'warning',
       confirmButtonText: 'Cerrar'
     });
 
@@ -381,34 +373,78 @@ buscarCita(){
     if(this.profesional){
       data.id_pro =this.profesional;
       this.UsuarioService.buscaCitasDisponiblesProf(data).subscribe((resp:any)=>{
-    if(resp.codigo != 200){
+        console.log("resp", resp);
+    if(resp.codigo == 200 && resp.data.length == 0){
       Swal.fire({
-        title: 'Error!',
+        // title: 'Error!',
         text: resp.mensaje,
-        icon: 'error',
+        icon: 'warning',
         confirmButtonText: 'Cerrar'
       });
     }
+    if(resp.codigo != 200){
+      Swal.fire({
+        // title: 'Error!',
+        text: resp.mensaje,
+        icon: 'warning',
+        confirmButtonText: 'Cerrar'
+      });
+    }
+    // this.citas=resp.data
+    const form ={
+      vista:this.datosVista,
+      citas: resp.data
+    }
     this.citas=resp.data
+    if(this.datosVista){
+
+      this.UsuarioService.DisparadorCitas.emit({
+        data:form
+      })
+      // console.log("citas", this.citas);
+    }
+    if(!this.datosVista){
+      Swal.fire({
+        // title: 'Error!',
+        text: "Seleccione una forma de visualizar",
+        icon: 'warning',
+        confirmButtonText: 'Cerrar'
+      });
+    }
   
-            });
+       });
     }
     if(!this.profesional && this.profesionales){
 
       this.UsuarioService.buscaCitasDisponiblesAll(data).subscribe((resp:any)=>{
         if(resp.data.length ==0){
           Swal.fire({
-            title: 'Error!',
+            // title: 'Error!',
             text: resp.mensaje,
-            icon: 'error',
+            icon: 'warning',
             confirmButtonText: 'Cerrar'
           });
         }
+        const form ={
+          vista:this.datosVista,
+          citas: resp.data
+        }
         this.citas=resp.data
-        this.UsuarioService.DisparadorCitas.emit({
-          data:this.citas
-        })
-        console.log("citas", this.citas);
+        if(this.datosVista){
+
+          this.UsuarioService.DisparadorCitas.emit({
+            data:form
+          })
+          // console.log("citas", this.citas);
+        }
+        if(!this.datosVista){
+          Swal.fire({
+            // title: 'Error!',
+            text: "Seleccione una forma de visualizar",
+            icon: 'warning',
+            confirmButtonText: 'Cerrar'
+          });
+        }
   
       });
             
@@ -422,27 +458,34 @@ buscarCita(){
 
 cambiaFecha(datos){
   console.log("datos", datos.value);
-  console.log("datos", JSON.parse(JSON.stringify(datos.name)));
+  this.obtenerInicioYFinSemana(datos.value);
 }
 
 cambiaVer(data){
-
-  if(data==2){
-    const right = 'timeGridWeek';
-    this.UsuarioService.DisparadorVista.emit({data: right});
-    
-    this.fecha.setDate(this.fecha.getDate() - this.fecha.getDay());
-    const first = new Date(this.fecha);
-    const  last = new Date(this.fecha);
-    last.setDate(last.getDate()+6);
-
-    // this.fecha1 = new FormControl(first, []); 
-    // this.fecha2 = new FormControl(last, []); 
+if(data==2){
+    const data ={
+      vista:'semana',
+      dias:7,
+      fecha:moment(this.fecha).format('YYYY-MM-DD'),
+      fechaInicio:this.fechaInicio,
+      fechatermino:this.fechaTermino
+    }
+    // console.log("data saleinte semana...", data);
+    this.datosVista = data;
+    // this.UsuarioService.DisparadorVista.emit({data: data});
 
   }
   if(data ==1){
-    const right = 'timeGridDay';
-    this.UsuarioService.DisparadorVista.emit({data: right});
+    const data ={
+      vista:'dia',
+      dias:1,
+      fecha:moment(this.fecha).format('YYYY-MM-DD'),
+      fechaInicio:this.fechaInicio,
+      fechatermino:this.fechaInicio
+    }
+
+    this.datosVista = data;
+    // this.UsuarioService.DisparadorVista.emit({data: data});
 
   }
 }
@@ -488,9 +531,9 @@ buscarBeneficiario(content, content1, content2){
   if(!this.citasReservadas){
     this.spinner.hide();
     Swal.fire({
-      title: 'Error!',
+      // title: 'Error!',
       text: 'Debe seleccionar una cita disponible',
-      icon: 'error',
+      icon: 'warning',
       confirmButtonText: 'Cerrar'
     });
   }
@@ -501,9 +544,9 @@ buscarBeneficiario(content, content1, content2){
   if(!data.rut){
     this.spinner.hide();
     Swal.fire({
-      title: 'Error!',
+      // title: 'Error!',
       text: 'Debe Ingrear su RUT o Documento',
-      icon: 'error',
+      icon: 'warning',
       confirmButtonText: 'Cerrar'
     });
   }
@@ -535,9 +578,9 @@ buscarBeneficiario(content, content1, content2){
                           if(ret.codigo != 200){
                             this.spinner.hide();
                             Swal.fire({
-                              title: 'Error!',
-                              text: "No se pudop valorizar la prestación",
-                              icon: 'error',
+                              // title: 'Error!',
+                              text: "No se pudo valorizar la prestación",
+                              icon: 'warning',
                               confirmButtonText: 'Cerrar'
                             });
                           }
@@ -593,8 +636,9 @@ buscarBeneficiario(content, content1, content2){
           console.log("PARTIUCLAR NO EXITE::::");
           this.spinner.hide();
           Swal.fire({
-            title: 'Error!',
+            // title: 'Error!',
             text: resp.data.mensaje,
+            icon: 'warning',
             confirmButtonText: 'Cerrar'
           });
           this.modalService.open(content1, { size: 'lg' });
@@ -609,9 +653,9 @@ buscarBeneficiario(content, content1, content2){
   if(this.consultaForm.value.tipoDoc == 2 ){ //direrente a rut
     this.spinner.hide();
     Swal.fire({
-      title: 'Error!',
+      // title: 'Error!',
       text: 'Por el momento solo debe ingresar Rut',
-      icon: 'error',
+      icon: 'warning',
       confirmButtonText: 'Cerrar'
     });
   }
@@ -648,9 +692,9 @@ confirmarPago(){
       if(resp.codigo != 200){
         this.spinner.hide();
         Swal.fire({
-          title: 'Error!',
+          // title: 'Error!',
           text: 'No se pudo realizar el pago!!',
-          icon: 'error',
+          icon: 'warning',
           confirmButtonText: 'Cerrar'
         });  
       }
@@ -682,9 +726,9 @@ confirmarPago(){
         if(resp.codigo != 200){
           this.spinner.hide();
           Swal.fire({
-            title: 'Error!',
+            // title: 'Error!',
             text: 'No se pudo realizar el pago!!',
-            icon: 'error',
+            icon: 'warning',
             confirmButtonText: 'Cerrar'
           });  
         }
@@ -712,9 +756,9 @@ confirmarPago(){
         if(resp.codigo != 200){
           this.spinner.hide();
           Swal.fire({
-            title: 'Error!',
+            // title: 'Error!',
             text: 'No se pudo realizar el pago!!',
-            icon: 'error',
+            icon: 'warning',
             confirmButtonText: 'Cerrar'
           });  
         }
@@ -834,9 +878,9 @@ pagoMultiple(data, prestaciones, content2){
         if(resp.codigo == 203){
           this.spinner.hide();
           Swal.fire({
-            title: 'Error!',
+            // title: 'Error!',
             text: resp.data.mensaje,
-            icon: 'error',
+            icon: 'warning',
             confirmButtonText: 'Cerrar'
           });    
         }
@@ -848,6 +892,45 @@ pagoMultiple(data, prestaciones, content2){
 
   }
   
+}
+
+obtenerInicioYFinSemana(current){
+  // obtenemos los valores de año y semana (asumimos que son valores válidos)
+  var year =Number(moment(current).format('YYYY')); 
+  var week = Number(moment(current).format('w'));
+
+// Simplemente para formatear la salida
+		function formatDate(date) {
+			return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()
+		}
+		//Aquí obtenemos el primer domingo del año
+		var sunday = new Date(year, 0, 1);
+
+		while (sunday.getDay() != 0) {
+			sunday.setDate(sunday.getDate() + 1);
+		}
+
+		//Si la semana es 1 empieza en el dia 1 de enero y termina el domingo más cercano
+		if (week ==1)
+		{
+			var primer = new Date(year, 0, (week - 1) * 7 + 1);
+			var ultimo = new Date(year, 0, (week - 1) * 7 + sunday.getDate());
+		}
+		else
+		{
+			// obtenemos el primer y último día de la semana del año indicado
+			var primer = new Date(year, 0, (week - 1) * 7 - (7 - sunday.getDate()) + 1);
+			var ultimo = new Date(year, 0, (week - 1) * 7 + sunday.getDate());
+		}
+    this.fechaInicio =moment(primer).format('YYYY-MM-DD');
+    this.fechaTermino = moment(ultimo).format('YYYY-MM-DD');
+    this.fecha1 = new FormControl(this.fechaInicio, []); 
+    this.fecha2 = new FormControl(this.fechaTermino, []); 
+    
+		// alert('Semana del ' + formatDate(primer) + " al " + formatDate(ultimo));
+    
+
+
 }
 
 

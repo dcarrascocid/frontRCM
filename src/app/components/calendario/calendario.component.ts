@@ -31,7 +31,7 @@ export class CalendarioComponent implements OnInit {
   ngOnInit() {
     this.UsuarioService.DisparadorVista.subscribe( (resp:any) =>{
       this.options.header.right =resp.data;
-      console.log("vuisra:::",  this.options.header.right);
+      // console.log("vuisra:::",  this.options.header.right);
     })
 
     this.options={
@@ -117,9 +117,9 @@ export class CalendarioComponent implements OnInit {
   }
   if(!arg.event._def.publicId){
     Swal.fire({
-      title: 'Error!',
+      // title: 'Error!',
       text: 'Cita Asignada recientemente',
-      icon: 'error',
+      icon: 'warning',
       confirmButtonText: 'Cerrar'
     });
   }

@@ -13,6 +13,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { ImagenComponent } from './imagen/imagen.component';
 import { LaboratorioComponent } from './laboratorio/laboratorio.component';
 
+
 @NgModule({
   declarations: [
     CitasComponent,
