@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerService } from "ngx-spinner";
 import {Router} from '@angular/router';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { ClassGetter, THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { right } from '@popperjs/core';
 import { isThisSecond } from 'date-fns';
 
@@ -936,9 +936,13 @@ pagoMultiple(data, prestaciones, content2){
 }
 
 obtenerInicioYFinSemana(current){
+  // console.log("lo que llega", current);
   // obtenemos los valores de año y semana (asumimos que son valores válidos)
   var year =Number(moment(current).format('YYYY')); 
   var week = Number(moment(current).format('w'));
+    // console.log("year", year);
+    // console.log("week", week);
+  week = week + 1;
 
 // Simplemente para formatear la salida
 		function formatDate(date) {
@@ -964,7 +968,9 @@ obtenerInicioYFinSemana(current){
 			var ultimo = new Date(year, 0, (week - 1) * 7 + sunday.getDate());
 		}
     this.fechaInicio =moment(primer).format('YYYY-MM-DD');
+    console.log("fecha1", this.fechaInicio);
     this.fechaTermino = moment(ultimo).format('YYYY-MM-DD');
+    console.log("fecha2", this.fechaTermino);
     this.fecha1 = new FormControl(this.fechaInicio, []); 
     this.fecha2 = new FormControl(this.fechaTermino, []); 
     
